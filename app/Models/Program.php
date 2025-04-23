@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Program extends Model
 {
     //
-
+    use \Illuminate\Database\Eloquent\Concerns\HasUuids;
     protected $fillable = [
         'university_id',
         'name',
