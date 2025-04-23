@@ -9,7 +9,7 @@ class Accomodation extends Model
     //
     protected $fillable =[
         'university_id',
-        'avg_cost',
+        'estimated_cost',
         'type',
     ];
 
