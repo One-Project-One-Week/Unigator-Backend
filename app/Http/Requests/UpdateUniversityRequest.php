@@ -6,14 +6,14 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class RegisterUniversityRequest extends FormRequest
+class UpdateUniversityRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -27,14 +27,16 @@ class RegisterUniversityRequest extends FormRequest
             'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'country' => 'required|string|max:255',
             'city' => 'required|string|max:255',
+            'description' => 'nullable',
             'slash' => 'required|alpha|unique:universities,slash',
+            'image' => 'nullable|array',
             'ranking' => 'required'
         ];
     }
 
     public function failedValidation(Validator $validator){
         throw new HttpResponseException(response()->json([
-            'status' => 'registration-fail',
+            'status' => 'update-fail',
             'statusCode' => 422,
             'message' => 'Validation Error',
             'data' => $validator->errors()

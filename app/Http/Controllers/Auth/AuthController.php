@@ -6,13 +6,27 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\RegisterUniversityRequest;
+use App\Http\Resources\UniversityResource;
+use App\Http\Resources\UserResource;
+use App\Models\University;
 use App\Models\User;
+use App\Services\UniversityService;
+use App\Traits\HttpResponses;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    use HttpResponses;
+
+    protected $uniService;
+
+    public function __construct(UniversityService $uniService)
+    {
+        $this->uniService = $uniService;
+    }
+
     public function userRegister(RegisterRequest $request)
     {
         $validatedData = $request->validated();
@@ -20,12 +34,14 @@ class AuthController extends Controller
         $user = User::create($validatedData);
         $token = $user->createToken(time())->plainTextToken;
 
+        return $this->success('success', ["token" => $token, "user" => UserResource::make($user)], "Registration success!", 200);
     }
 
     public function uniValidate(RegisterRequest $request)
     {
         $validatedData = $request->validated();
 
+        return $this->success("success", $validatedData, "Validation success", 200);
     }
 
     public function uniRegister(RegisterUniversityRequest $request)
@@ -34,8 +50,10 @@ class AuthController extends Controller
         $validateData['role'] = '1';
 
         if($request->hasFile('logo')) {
-            $filename = time() . '_' . $image->getClientOriginalName();
-            $image->storeAs('logos', $filename, 'r2');
+            $filename = $this->uniService->handleLogoUpload($request->file('logo'));
+            if (!$filename) {
+                return $this->fail('upload-error', null, "Logo Upload Failed", 400);
+            }
 
             $validatedData['logo'] = $filename;
         }
@@ -49,8 +67,9 @@ class AuthController extends Controller
         ]);
 
         $university = University::create($validatedData);
-
         $token = $user->createToken(time())->plainTextToken;
+
+        return $this->success('success', ["token" => $token, "data" => UniversityResource::make($university)], "University registration success!", 200);
     }
 
     public function login(LoginRequest $request)
@@ -59,15 +78,22 @@ class AuthController extends Controller
         $user = User::where('email', $validatedData['email']->first());
 
         if (!$user || Hash::check($validatedData['password'], $user->password)) {
-            return response()->json(['message' => 'Invalid email or password.'], 401);
+            return $this->fail('login-error', null, "Invalid email or password", 401);
         }
 
-        $token = $user->CreateToken(time())->plainTextToken;
+        $token = $user->createToken(time())->plainTextToken;
 
+        if($user->role == '1') {
+            $university = University::where('user_id', $user->id)->first();
+            return $this->success('success', ["token" => $token, "data" => UniversityResource::make($university)], "Login success!", 200);
+        }
+        return $this->success('success', ["token" => $token, "data" => UserResource::make($user)], "Login success!", 200);
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
+
+        return $this->success('success', null, "Logout success!", 200);
     }
 }
