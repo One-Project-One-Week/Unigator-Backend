@@ -8,6 +8,9 @@ class Program extends Model
 {
     //
     use \Illuminate\Database\Eloquent\Concerns\HasUuids;
+
+    protected $primaryKey = 'uuid';
+
     protected $fillable = [
         'university_id',
         'name',
@@ -21,6 +24,6 @@ class Program extends Model
 
     public function universities()
     {
-        return $this->belongsTo( University::class);
+        return $this->belongsTo(University::class);
     }
 }

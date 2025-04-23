@@ -29,7 +29,7 @@ class ProgramController extends Controller
             $programList = ProgramResources::collection($this->programmservice->getAll());
             return $this->success('program-success', $programList, 'Programs retrieved successfully', 200);
         } catch (\Exception $e) {
-            return $this->fail('program-fail', null, 'Failed to retrieve programs', 500);
+            return $this->fail('program-fail', null, $e->getMessage(), 500);
         }
     }
 
@@ -49,11 +49,13 @@ class ProgramController extends Controller
     {
         //
         $validatedData = $request->validated();
+        $validatedData['detail'] = json_encode($validatedData['detail']);
+        $validatedData['application_requirement'] = json_encode($validatedData['application_requirement']);
         try {
             $resProgram = ProgramResources::make($this->programmservice->createData($validatedData));
             return $this->success('program-success', $resProgram, 'Program created successfully', 201);
         } catch (\Exception $e) {
-            return $this->fail('program-fail', null, 'Failed to create program', 500);
+            return $this->fail('program-fail', null, $e->getMessage(), 500);
         }
     }
 
@@ -67,7 +69,7 @@ class ProgramController extends Controller
             $program = ProgramResources::make($this->programmservice->getDataById($id));
             return $this->success('program-success', $program, 'Program retrieved successfully', 200);
         } catch (\Exception $e) {
-            return $this->fail('program-fail', null, 'Failed to retrieve program', 500);
+            return $this->fail('program-fail', null, $e->getMessage(), 500);
         }
     }
 
@@ -81,7 +83,7 @@ class ProgramController extends Controller
             $program = ProgramResources::make($this->programmservice->getDataById($id));
             return $this->success('program-success', $program, 'Program retrieved successfully', 200);
         } catch (\Exception $e) {
-            return $this->fail('program-fail', null, 'Failed to retrieve program', 500);
+            return $this->fail('program-fail', null, $e->getMessage(), 500);
         }
     }
 
@@ -92,12 +94,14 @@ class ProgramController extends Controller
     {
         //
         $validatedData = $request->validated();
+        $validatedData['detail'] = json_encode($validatedData['detail']);
+        $validatedData['application_requirement'] = json_encode($validatedData['application_requirement']);
         try {
             $program = $this->programmservice->updateData($id, $validatedData);
             $resProgram = ProgramResources::make($this->programmservice->getDataById($id));
             return $this->success('program-success', $resProgram, 'Program updated successfully', 200);
         } catch (\Exception $e) {
-            return $this->fail('program-fail', null, 'Failed to update program', 500);
+            return $this->fail('program-fail', null, $e->getMessage(), 500);
         }
     }
 
@@ -111,7 +115,7 @@ class ProgramController extends Controller
             $this->programmservice->deleteData($id);
             return $this->success('program-success', null, 'Program deleted successfully', 200);
         } catch (\Exception $e) {
-            return $this->fail('program-fail', null, 'Failed to delete program', 500);
+            return $this->fail('program-fail', null, $e->getMessage(), 500);
         }
     }
 }

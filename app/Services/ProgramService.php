@@ -13,7 +13,7 @@ class ProgramService extends CommonService
 
     public function getDataById($id)
     {
-        return $this->connection()->query()->where('id', $id)->get();
+        return $this->connection()->query()->where('uuid', $id)->firstOrFail();
     }
 
     public function createData(array $data)
@@ -23,11 +23,11 @@ class ProgramService extends CommonService
 
     public function updateData($id, array $data)
     {
-        return $this->connection()->query()->where('id', $id)->update($data);
+        return $this->connection()->query()->where('uuid', $id)->update($data);
     }
 
     public function deleteData($id)
     {
-        return $this->connection()->query()->where('id', $id)->delete();
+        return $this->connection()->query()->where('uuid', $id)->delete();
     }
 }
