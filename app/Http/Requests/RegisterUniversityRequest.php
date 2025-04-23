@@ -24,11 +24,10 @@ class RegisterUniversityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'country' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'slug' => 'required|alpha|unique:universities,slug',
-            'ranking' => 'required'
         ];
     }
 
