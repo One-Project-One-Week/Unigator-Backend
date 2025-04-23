@@ -25,7 +25,7 @@ class University extends Model
         return $this->belongsTo(User::class);
    }
 
-   public function majors()
+   public function programs()
    {
         return $this->hasMany(Program::class, 'university_id');
    }

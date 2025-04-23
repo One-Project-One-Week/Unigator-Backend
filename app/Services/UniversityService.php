@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\University;
+use Illuminate\Support\Facades\Storage;
 
 class UniversityService extends CommonService
 {
@@ -29,8 +30,26 @@ class UniversityService extends CommonService
 
         if(isset($image) && is_array($image)) {
             foreach ($image as $item) {
-                $this->handleImageUpload($item);
+                $filename = uniqid() . '_' . $item->getClientOriginalName();
+                $item->storeAs('images', $filename, 'r2');
+                $path[] = $filename;
             }
         }
+        return $path;
+    }
+
+    public function deleteImage($image)
+    {
+        if ($image && Storage::disk('r2')->exists('logos/' . $image)) {
+            Storage::disk('r2')->delete('logos/' . $image);
+        }
+        else {
+            return null;
+        }
+    }
+
+    public function deleteMultipleImages(array $image, )
+    {
+        
     }
 }

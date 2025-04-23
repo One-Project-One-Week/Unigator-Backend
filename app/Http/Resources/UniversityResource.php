@@ -22,7 +22,8 @@ class UniversityResource extends JsonResource
             'city' => $this->city,
             'slug' => $this->slug,
             'ranking' => $this->ranking,
-            'image' => $this->image
+            'image' => $this->image,
+            'programs' => ProgramResources::collection($this->whenLoaded('programs'))
         ];
     }
 }

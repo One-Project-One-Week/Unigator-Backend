@@ -20,5 +20,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 Route::apiResource('/programs', ProgramController::class);
 
-Route::get('/university', UniversityController::class, 'all');
+Route::get('/university', [UniversityController::class, 'all']);
 Route::get('/university/top', [UniversityController::class, 'topUniversities']);
