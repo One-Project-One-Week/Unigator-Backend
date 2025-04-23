@@ -10,11 +10,10 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/register', [AuthController::class, 'userRegister']);
-Route::post('/university/validate', [AuthController::class, 'uniValidate']);
 Route::post('/university/register', [AuthController::class, 'uniRegister']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
+
 });
 Route::apiResource('/programs', ProgramController::class);

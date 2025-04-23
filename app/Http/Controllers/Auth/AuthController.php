@@ -38,38 +38,26 @@ class AuthController extends Controller
         return $this->success('success', ["token" => $token, "user" => UserResource::make($user)], "Registration success!", 200);
     }
 
-    public function uniValidate(RegisterRequest $request)
+    public function uniRegister(RegisterRequest $request, RegisterUniversityRequest $uniRequest)
     {
         $validatedData = $request->validated();
+        $validatedUniData = $uniRequest->validated();
 
-        return $this->success("success", $validatedData, "Validation success", 200);
-    }
-
-    public function uniRegister(RegisterUniversityRequest $request)
-    {
-        $validatedData = $request->validated();
-
-        if($request->hasFile('logo')) {
-            $filename = $this->uniService->handleLogoUpload($request->file('logo'));
+        if($uniRequest->hasFile('logo')) {
+            $filename = $this->uniService->handleLogoUpload($uniRequest->file('logo'));
             if (!$filename) {
                 return $this->fail('upload-error', null, "Logo Upload Failed", 400);
             }
 
-            $validatedData['logo'] = $filename;
+            $validatedUniData['logo'] = $filename;
         }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'bio' => $request->bio,
-            'role' => '1',
-            'password' => Hash::make($request->password)
-        ]);
+        $validatedData['role'] = '1';
+        $user = User::create($validatedData);
 
-        $validatedData['user_id'] = $user->id;
+        $validatedUniData['user_id'] = $user->id;
 
-        $university = University::create($validatedData);
+        $university = University::create($validatedUniData);
         $university->load('user');
 
         $token = $user->createToken(time())->plainTextToken;
@@ -96,10 +84,4 @@ class AuthController extends Controller
         return $this->success('success', ["token" => $token, "data" => UserResource::make($user)], "Login success!", 200);
     }
 
-    public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
-
-        return $this->success('success', null, "Logout success!", 200);
-    }
 }

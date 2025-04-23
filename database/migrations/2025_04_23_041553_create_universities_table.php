@@ -17,8 +17,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('country');
             $table->string('city');
-            $table->integer('ranking');
-            $table->string('logo');
+            $table->integer('ranking')->nullable();
+            $table->string('logo')->nullable();
             $table->json('image')->nullable();
             $table->string('slug')->unique();
             $table->timestamps();
