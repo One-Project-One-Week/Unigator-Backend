@@ -18,7 +18,7 @@ class University extends Model
         'ranking',
         'logo',
         'slug',
-        'images',
+        'image',
     ];
    public function user()
    {

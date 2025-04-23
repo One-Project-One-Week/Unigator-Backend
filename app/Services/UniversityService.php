@@ -11,7 +11,7 @@ class UniversityService extends CommonService
         return new University();
     }
 
-    public function handleLogoUpload($image)
+    public function handleImageUpload($image)
     {
         if ($image) {
             $filename = time() . '_' . $image->getClientOriginalName();
@@ -23,8 +23,14 @@ class UniversityService extends CommonService
         }
     }
 
-    public function handleImageUpload(array $data)
+    public function handleMultipleUpload(array $image)
     {
-        
+        $path = [];
+
+        if(isset($image) && is_array($image)) {
+            foreach ($image as $item) {
+                $this->handleImageUpload($item);
+            }
+        }
     }
 }

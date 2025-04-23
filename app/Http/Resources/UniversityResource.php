@@ -18,9 +18,11 @@ class UniversityResource extends JsonResource
             'user' => UserResource::make($this->user),
             'logo' => $this->logo,
             'country' => $this->country,
+            'description' => $this->description,
             'city' => $this->city,
             'slug' => $this->slug,
             'ranking' => $this->ranking,
+            'image' => $this->image
         ];
     }
 }
