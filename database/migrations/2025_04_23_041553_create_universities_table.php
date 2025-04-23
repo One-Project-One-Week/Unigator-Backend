@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('universities', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->string('country');
             $table->string('city');
             $table->integer('ranking');
             $table->string('logo');
-            $table->json('image');
+            $table->json('image')->nullable();
+            $table->string('slug')->unique();
             $table->timestamps();
         });
     }
