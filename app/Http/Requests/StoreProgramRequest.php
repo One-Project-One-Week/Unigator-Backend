@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreProgramRequest extends FormRequest
 {
@@ -22,16 +24,24 @@ class StoreProgramRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-            'id' => 'required|integer',
             'uni_id' => 'required|integer|exists:universities,id',
             'name' => 'required|string|max:255',
             'detail' => 'required|array',
             'degree_type' => 'required|string',
-            'duration' => 'required|striing|max:255',
+            'duration' => 'required|string|max:255',
             'application_requirement' => 'required|array',
-            'enrollemnt_period' => 'required|string|max:255',
-            'payment_type' => 'required|in:',
+            'intake' => 'required|string|max:255',
+            'payment_plan' => 'required|in:monthly,per_semester,no_installements',
         ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'status' => 'program-validation-fail',
+            'code' => 422,
+            'message' => 'Validation Error',
+            'data' => $validator->errors()
+        ], 422));
     }
 }
