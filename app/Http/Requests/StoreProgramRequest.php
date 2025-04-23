@@ -24,7 +24,7 @@ class StoreProgramRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'uni_id' => 'required|integer|exists:universities,id',
+            'university_id' => 'required|integer|exists:universities,id',
             'name' => 'required|string|max:255',
             'detail' => 'required|array',
             'degree_type' => 'required|string',
