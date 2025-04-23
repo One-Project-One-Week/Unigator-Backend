@@ -19,7 +19,7 @@ class UniversityResource extends JsonResource
             'logo' => $this->logo,
             'country' => $this->country,
             'city' => $this->city,
-            'slash' => $this->slash,
+            'slug' => $this->slug,
             'ranking' => $this->ranking,
         ];
     }

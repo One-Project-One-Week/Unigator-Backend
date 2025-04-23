@@ -28,7 +28,7 @@ class UpdateUniversityRequest extends FormRequest
             'country' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'description' => 'nullable',
-            'slash' => 'required|alpha|unique:universities,slash',
+            'slug' => 'required|alpha|unique:universities,slug',
             'image' => 'nullable|array',
             'ranking' => 'required'
         ];

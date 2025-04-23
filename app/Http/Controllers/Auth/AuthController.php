@@ -30,6 +30,7 @@ class AuthController extends Controller
     public function userRegister(RegisterRequest $request)
     {
         $validatedData = $request->validated();
+        $validatedData['role'] = '0';
 
         $user = User::create($validatedData);
         $token = $user->createToken(time())->plainTextToken;
@@ -47,7 +48,6 @@ class AuthController extends Controller
     public function uniRegister(RegisterUniversityRequest $request)
     {
         $validatedData = $request->validated();
-        $validateData['role'] = '1';
 
         if($request->hasFile('logo')) {
             $filename = $this->uniService->handleLogoUpload($request->file('logo'));
@@ -63,10 +63,15 @@ class AuthController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'bio' => $request->bio,
+            'role' => '1',
             'password' => Hash::make($request->password)
         ]);
 
+        $validatedData['user_id'] = $user->id;
+
         $university = University::create($validatedData);
+        $university->load('user');
+
         $token = $user->createToken(time())->plainTextToken;
 
         return $this->success('success', ["token" => $token, "data" => UniversityResource::make($university)], "University registration success!", 200);
@@ -75,9 +80,9 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         $validatedData = $request->validated();
-        $user = User::where('email', $validatedData['email']->first());
+        $user = User::where('email', $validatedData['email'])->first();
 
-        if (!$user || Hash::check($validatedData['password'], $user->password)) {
+        if (!$user || !Hash::check($validatedData['password'], $user->password)) {
             return $this->fail('login-error', null, "Invalid email or password", 401);
         }
 
@@ -85,6 +90,7 @@ class AuthController extends Controller
 
         if($user->role == '1') {
             $university = University::where('user_id', $user->id)->first();
+            $university->load('user');
             return $this->success('success', ["token" => $token, "data" => UniversityResource::make($university)], "Login success!", 200);
         }
         return $this->success('success', ["token" => $token, "data" => UserResource::make($user)], "Login success!", 200);

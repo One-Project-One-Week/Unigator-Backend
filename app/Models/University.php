@@ -12,16 +12,17 @@ class University extends Model
 
     protected $fillable = [
         'user_id',
-        'description',  
+        'description',
         'country',
         'city',
         'ranking',
         'logo',
+        'slug',
         'images',
     ];
    public function user()
    {
-         return $this->belongsTo(User::class, 'university_id');
+        return $this->belongsTo(User::class);
    }
 
    public function majors()
