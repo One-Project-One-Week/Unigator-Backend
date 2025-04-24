@@ -8,6 +8,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Rating;
 
 class University extends Model
 {

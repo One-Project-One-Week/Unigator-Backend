@@ -7,6 +7,7 @@ use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\AccomodationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RatingController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -39,3 +40,5 @@ Route::put('/accomodation/{id}', [AccomodationController::class, 'UpdateAccomoda
 
 Route::delete('/accomodation/{id}', [AccomodationController::class, 'deleteAccomodation']);
 
+Route::get('/rating', [RatingController::class, 'getRating']);
+Route::post('/rating', [RatingController::class, 'createRating']);

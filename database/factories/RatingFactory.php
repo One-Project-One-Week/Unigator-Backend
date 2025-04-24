@@ -19,9 +19,9 @@ class RatingFactory extends Factory
     public function definition(): array
     {
         return [
-            "user_id" => User::factory(),
-            "university_id" => University::factory(),
-            "rating_rate" => $this->faker->randomFloat(2, 1, 5),
+            "user_id" => User::inRandomOrder()->value('id'),
+            "university_id" => University::inRandomOrder()->value('id'), // 🛠️ fetch random existing university
+            "rating_rate" => $this->faker->randomElement([1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]),
         ];
     }
 }
