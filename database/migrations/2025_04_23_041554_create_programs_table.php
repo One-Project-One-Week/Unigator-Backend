@@ -15,11 +15,13 @@ return new class extends Migration
             $table->uuid();
             $table->foreignId('university_id')->constrained('universities');
             $table->string('name');
+            $table->foreignId('category_id')->constrained('categories');
             $table->json('detail');
             $table->string('degree_type');
             $table->string('duration');
             $table->json('application_requirement');
             $table->string('intake');
+            $table->string('level');
             $table->enum('payment_plan', ['monthly', 'per_semester', 'no_installements']);
             $table->timestamps();
         });

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\AccomodationController;
 
 
@@ -20,10 +21,15 @@ Route::post('/register', [AuthController::class, 'userRegister']);
 Route::post('/university/register', [AuthController::class, 'uniRegister']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::get('/university', [UniversityController::class, 'allUniversities']);
+Route::get('/university/top', [UniversityController::class, 'topUniversities']);
 
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::put('/university/update', [UniversityController::class, 'updateInfo']);
+    Route::get('/university/{slug}', [UniversityController::class, 'detail']);
 
 });
+
 Route::apiResource('/programs', ProgramController::class);
 Route::apiResource('/programs', ProgramController::class);
 
