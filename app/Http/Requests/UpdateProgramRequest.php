@@ -38,8 +38,8 @@ class UpdateProgramRequest extends FormRequest
     public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
-            'status' => 'program-validation-fail',
-            'code' => 422,
+            'status' => 'university-fail',
+            'statusCode' => 422,
             'message' => 'Validation Error',
             'data' => $validator->errors()
         ], 422));
