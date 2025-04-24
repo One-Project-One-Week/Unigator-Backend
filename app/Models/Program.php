@@ -4,9 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
 class Program extends Model
 {
     //
+    protected $casts = [
+        'detail' => 'array',
+        'application_requirement' => 'array',
+    ];
+    
+    use HasFactory, Notifiable, HasApiTokens;
     use \Illuminate\Database\Eloquent\Concerns\HasUuids;
 
     protected $primaryKey = 'uuid';

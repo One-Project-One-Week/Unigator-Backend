@@ -3,8 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\AccomodationController;
-
-
+use App\Http\Controllers\SearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,3 +30,4 @@ Route::apiResource('/programs', ProgramController::class);
 Route::put('/accomodation/{id}', [AccomodationController::class, 'updateAccomodation']);
 
 Route::delete('/accomodation/{id}', [AccomodationController::class, 'deleteAccomodation']);
+
