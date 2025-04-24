@@ -21,15 +21,26 @@ class University extends Model
         'city',
         'ranking',
         'logo',
+        'cover',
+        'founded',
+        'type',
+        'no_of_students',
+        'website_link',
         'slug',
-        'images',
+        'image',
     ];
+
+    protected $casts = [
+        'image' => 'array',
+    ];
+
+
    public function user()
    {
         return $this->belongsTo(User::class);
    }
 
-   public function majors()
+   public function programs()
    {
         return $this->hasMany(Program::class, 'university_id');
    }

@@ -13,7 +13,7 @@ class UpdateUniversityRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -28,9 +28,14 @@ class UpdateUniversityRequest extends FormRequest
             'country' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'description' => 'nullable',
-            'slug' => 'required|alpha|unique:universities,slug',
+            'slug' => 'required|alpha|unique:universities,slug,' . $this->user()->university->id,
             'image' => 'nullable|array',
-            'ranking' => 'required'
+            'type' => 'nullable|string|max:255',
+            'founded' => 'nullable|integer',
+            'no_of_students' => 'nullable|integer',
+            'website_link' => 'nullable|url',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'ranking' => 'nullable'
         ];
     }
 

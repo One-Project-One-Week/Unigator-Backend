@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateProgramRequest extends FormRequest
+class UpdateProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,21 +24,16 @@ class UpdateProgramRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'uni_id' => 'sometimes|required|integer|exists:universities,id',
-            'name' => 'sometimes|required|string|max:255',
-            'detail' => 'sometimes|required|array',
-            'degree_type' => 'sometimes|required|string',
-            'duration' => 'sometimes|required|string|max:255',
-            'application_requirement' => 'sometimes|required|array',
-            'intake' => 'sometimes|required|string|max:255',
-            'payment_plan' => 'sometimes|required|in:monthly,per_semester,no_installements',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $this->user()->id,
+            'phone' => 'nullable|string|max:15|unique:users,phone,' . $this->user()->id,
+            'bio' => 'nullable|string|max:255',
         ];
     }
 
-    public function failedValidation(Validator $validator)
-    {
+    public function failedValidation(Validator $validator){
         throw new HttpResponseException(response()->json([
-            'status' => 'university-fail',
+            'status' => 'update-fail',
             'statusCode' => 422,
             'message' => 'Validation Error',
             'data' => $validator->errors()

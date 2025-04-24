@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\Accomodation;
+use App\Models\Category;
 
-class AccomodationService extends CommonService
+class CategoryService extends CommonService
 {
     public function connection()
     {
-        return new Accomodation;
+        return new Category;
     }
 
     public function getDataById($id)
@@ -18,10 +18,10 @@ class AccomodationService extends CommonService
 
     public function createData(array $data)
     {
-        return $this->connection()->create($data);
+        return $this->connection()->query()->create($data);
     }
 
-    public function updateData($id, array $data)
+    public function updateData(array $data, $id)
     {
         return $this->connection()->query()->where('id', $id)->update($data);
     }
