@@ -5,8 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\AccomodationController;
-
-
+use App\Http\Controllers\SearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

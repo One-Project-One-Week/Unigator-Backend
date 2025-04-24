@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Models;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 
 
@@ -8,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class University extends Model
 {
+    use HasFactory, Notifiable, HasApiTokens;
     //
 
     protected $fillable = [
@@ -44,5 +48,9 @@ class University extends Model
    public function accommodations()
    {
        return $this->hasMany(Accomodation::class, 'university_id');
+   }
+   public function ratings()
+   {
+       return $this->hasMany(Rating::class, 'university_id');
    }
 }

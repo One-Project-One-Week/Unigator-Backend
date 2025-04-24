@@ -28,6 +28,7 @@ class RegisterUniversityRequest extends FormRequest
             'country' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'slug' => 'required|alpha|unique:universities,slug',
+            'website_link' => 'required|url'
         ];
     }
 
