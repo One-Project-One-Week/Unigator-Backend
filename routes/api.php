@@ -38,9 +38,4 @@ Route::apiResource('/categories', CategoryController::class);
 
 Route::put('/accomodation/{id}', [AccomodationController::class, 'UpdateAccomodation']);
 
-<<<<<<< HEAD
 Route::delete('/accomodation/{id}', [AccomodationController::class, 'deleteAccomodation']);
-
-=======
-Route::delete('/accomodation/{id}', [AccomodationController::class, 'deleteAccomodation']);
->>>>>>> 6a67277d0e60a757fd53f31822a921f89f98d5fd
