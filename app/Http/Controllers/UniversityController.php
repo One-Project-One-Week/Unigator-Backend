@@ -22,9 +22,26 @@ class UniversityController extends Controller
         $this->university = $university;
     }
 
-    public function allUniversities()
+    public function allUniversities(Request $request)
     {
-        $universities = University::with('programs')->orderBy('ranking', 'asc')->paginate(1);
+        $perPage = $request->query('per_page');
+        if ($perPage) {
+            $perPage = $request->query('per_page') > 0 ? $request->query('per_page') : 10;
+        } else {
+            $perPage = 10;
+        }
+        $search = $request->query('search');
+
+        $universities = University::with('user')
+            ->when($search, function ($query, $search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('slug', 'like', '%'.$search.'%')
+                        ->orWhereHas('user', function($q) use ($search) {
+                            $q->where('name', 'like', '%'.$search.'%');
+                        });
+                });
+            })
+            ->orderBy('ranking', 'asc')->paginate($perPage);
         if (!$universities) {
             return $this->fail('not-found', null, "No University Available.", 404);
         }
@@ -46,7 +63,7 @@ class UniversityController extends Controller
 
     public function topUniversities()
     {
-        $universities = University::with('programs')->orderBy('ranking', 'asc')->take(6)->get();
+        $universities = University::orderBy('ranking', 'asc')->take(6)->get();
         if (!$universities) {
             return $this->fail('not-found', null, "No University Available.", 404);
         }
@@ -56,7 +73,7 @@ class UniversityController extends Controller
 
     public function detail($slug)
     {
-        $university = University::with('programs')->where('slug', $slug)->first();
+        $university = University::with(['programs', 'accommodations'])->where('slug', $slug)->first();
         if (!$university) {
             return $this->fail('not-found', null, "University Not Found", 404);
         }
