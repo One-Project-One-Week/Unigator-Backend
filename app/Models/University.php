@@ -49,4 +49,8 @@ class University extends Model
    {
        return $this->hasMany(Accomodation::class, 'university_id');
    }
+   public function ratings()
+   {
+       return $this->hasMany(Rating::class, 'university_id');
+   }
 }

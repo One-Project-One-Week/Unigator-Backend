@@ -3,8 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -22,7 +23,6 @@ class User extends Authenticatable
         'name',
         'email',
         'phone',
-        'bio',
         'role',
         'password',
     ];
@@ -53,5 +53,10 @@ class User extends Authenticatable
     public function university()
     {
         return $this->hasOne(University::class);
+    }
+
+    public function rating()
+    {
+        return $this->hasMany(Rating::class);
     }
 }
