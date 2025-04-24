@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('accomodations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('university_id');
-            $table->float('avg_cost');
+            $table->float('estimated_cost');
             $table->enum('type', ['dorm', 'private-rental']);
             $table->timestamps();
         });

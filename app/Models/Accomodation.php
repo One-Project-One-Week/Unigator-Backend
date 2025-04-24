@@ -9,10 +9,11 @@ class Accomodation extends Model
     //
     protected $fillable =[
         'university_id',
-        'avg_cost',
+        'estimated_cost',
         'type',
     ];
 
+    protected $table = 'accomodations';
     public function university()
     {
         return $this->belongsTo(University::class, 'university_id');  // Foreign key is 'university_id'

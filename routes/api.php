@@ -3,12 +3,19 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\AccomodationController;
+
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+
+Route::post('/accomodation', [AccomodationController::class, 'createAccomodation']);
+
 
 Route::post('/register', [AuthController::class, 'userRegister']);
 Route::post('/university/register', [AuthController::class, 'uniRegister']);
@@ -20,6 +27,15 @@ Route::get('/university/top', [UniversityController::class, 'topUniversities']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/university/update', [UniversityController::class, 'updateInfo']);
     Route::get('/university/{slug}', [UniversityController::class, 'detail']);
+
 });
 
 Route::apiResource('/programs', ProgramController::class);
+Route::apiResource('/programs', ProgramController::class);
+
+
+
+
+Route::put('/accomodation/{id}', [AccomodationController::class, 'UpdateAccomodation']);
+
+Route::delete('/accomodation/{id}', [AccomodationController::class, 'deleteAccomodation']);
