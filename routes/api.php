@@ -22,7 +22,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
-    
+
 });
 Route::apiResource('/programs', ProgramController::class);
 Route::apiResource('/programs', ProgramController::class);
@@ -30,8 +30,6 @@ Route::apiResource('/programs', ProgramController::class);
 
 
 
-Route::put('/accomodation/{id}', [AccomodationController::class, 'updateAccomodation']);
+Route::put('/accomodation/{id}', [AccomodationController::class, 'UpdateAccomodation']);
 
 Route::delete('/accomodation/{id}', [AccomodationController::class, 'deleteAccomodation']);
-
-
