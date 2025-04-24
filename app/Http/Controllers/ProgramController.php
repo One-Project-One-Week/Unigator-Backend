@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProgramRequest;
 use App\Http\Requests\UpdateProgramRequest;
 use App\Http\Resources\ProgramResources;
+use App\Models\Program;
 use App\Services\ProgramService;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
@@ -33,6 +34,40 @@ class ProgramController extends Controller
         }
     }
 
+    public function getPrograms(Request $request)
+    {
+        $perPage = $request->query('per_page');
+        if ($perPage) {
+            $perPage = $request->query('per_page') > 0 ? $request->query('per_page') : 10;
+        } else {
+            $perPage = 10;
+        }
+        $search = $request->query('search');
+
+        $programs = Program::with('category')
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhereHas('category', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    });
+            })
+            ->orderBy('created_at', 'desc')->paginate($perPage);
+
+        $resProgram = ProgramResources::collection($programs);
+        return $this->success('program-success', [
+            'data' => $resProgram,
+            'meta' => [
+                'current_page' => $programs->currentPage(),
+                'last_page' => $programs->lastPage(),
+                'per_page' => $programs->perPage(),
+                'total' => $programs->total(),
+                'next_page_url' => $programs->nextPageUrl(),
+                'prev_page_url' => $programs->previousPageUrl(),
+                'first_page_url' => $programs->url(1),
+                'last_page_url' => $programs->url($programs->lastPage()),
+            ]
+        ], 'Programs retrieved successfully', 200);
+    }
     /**
      * Show the form for creating a new resource.
      */
