@@ -13,6 +13,7 @@ class Accomodation extends Model
         'type',
     ];
 
+    protected $table = 'accomodations';
     public function university()
     {
         return $this->belongsTo(University::class, 'university_id');  // Foreign key is 'university_id'
