@@ -30,6 +30,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 });
 
+Route::get('/programs/search', [ProgramController::class, 'getPrograms']);
+
 Route::apiResource('/programs', ProgramController::class);
 Route::apiResource('/categories', CategoryController::class);
 
