@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
     
             Program::factory(3)->create([
                 'university_id' => $university->id,
+ 
             ]);
     
             Accomodation::factory(2)->create([
