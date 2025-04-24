@@ -8,6 +8,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Rating;
 
 class University extends Model
 {
@@ -48,5 +49,9 @@ class University extends Model
    public function accommodations()
    {
        return $this->hasMany(Accomodation::class, 'university_id');
+   }
+   public function ratings()
+   {
+       return $this->hasMany(Rating::class, 'university_id');
    }
 }

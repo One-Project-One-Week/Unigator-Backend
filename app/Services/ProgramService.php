@@ -11,6 +11,11 @@ class ProgramService extends CommonService
         return new Program;
     }
 
+    public function getData()
+    {
+        return $this->connection()->with('category')->get();
+    }
+
     public function getDataById($id)
     {
         return $this->connection()->query()->where('uuid', $id)->firstOrFail();

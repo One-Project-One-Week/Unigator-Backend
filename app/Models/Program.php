@@ -31,6 +31,8 @@ class Program extends Model
         'application_requirement',
         'intake',
         'payment_plan',
+        'category_id',
+        'level',
     ];
 
     public function universities()
