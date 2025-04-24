@@ -15,7 +15,7 @@ class Program extends Model
         'detail' => 'array',
         'application_requirement' => 'array',
     ];
-    
+
     use HasFactory, Notifiable, HasApiTokens;
     use \Illuminate\Database\Eloquent\Concerns\HasUuids;
 
@@ -30,6 +30,8 @@ class Program extends Model
         'application_requirement',
         'intake',
         'payment_plan',
+        'category_id',
+        'level',
     ];
 
     public function universities()
