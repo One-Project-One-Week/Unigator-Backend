@@ -26,4 +26,9 @@ class Program extends Model
     {
         return $this->belongsTo(University::class);
     }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

@@ -19,7 +19,12 @@ return new class extends Migration
             $table->string('city');
             $table->integer('ranking')->nullable();
             $table->string('logo')->nullable();
+            $table->string('cover')->nullable();
+            $table->year('founded')->nullable();
+            $table->enum('type', ['public', 'private'])->nullable();
+            $table->integer('no_of_students')->nullable();
             $table->json('image')->nullable();
+            $table->string('website_link')->nullable();
             $table->string('slug')->unique();
             $table->timestamps();
         });

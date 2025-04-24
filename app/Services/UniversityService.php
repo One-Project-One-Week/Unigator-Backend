@@ -12,11 +12,23 @@ class UniversityService extends CommonService
         return new University();
     }
 
-    public function handleImageUpload($image)
+    public function handleLogoUpload($image)
     {
         if ($image) {
             $filename = time() . '_' . $image->getClientOriginalName();
             $image->storeAs('logos', $filename, 'r2');
+
+            return $filename;
+        } else {
+            return null;
+        }
+    }
+
+    public function handleSingleUpload($image)
+    {
+        if ($image) {
+            $filename = time() . '_' . $image->getClientOriginalName();
+            $image->storeAs('images', $filename, 'r2');
 
             return $filename;
         } else {
@@ -30,15 +42,14 @@ class UniversityService extends CommonService
 
         if(isset($image) && is_array($image)) {
             foreach ($image as $item) {
-                $filename = uniqid() . '_' . $item->getClientOriginalName();
-                $item->storeAs('images', $filename, 'r2');
+                $filename = $this->handleSingleUpload($item);
                 $path[] = $filename;
             }
         }
         return $path;
     }
 
-    public function deleteImage($image)
+    public function deleteLogo($image)
     {
         if ($image && Storage::disk('r2')->exists('logos/' . $image)) {
             Storage::disk('r2')->delete('logos/' . $image);
@@ -48,8 +59,21 @@ class UniversityService extends CommonService
         }
     }
 
-    public function deleteMultipleImages(array $image, )
+    public function deleteSingleImage($image)
     {
-        
+        if ($image && Storage::disk('r2')->exists('images/' . $image)) {
+            Storage::disk('r2')->delete('images/' . $image);
+        }
+        else {
+            return null;
+        }
+    }
+
+    public function deleteMultipleImages(array $image, $existingImages)
+    {
+        $deletingImgs = array_diff($image, $existingImages);
+        foreach ($deletingImgs as $img) {
+            $this->deleteSingleImage($img);
+        }
     }
 }

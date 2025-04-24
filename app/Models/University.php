@@ -17,9 +17,20 @@ class University extends Model
         'city',
         'ranking',
         'logo',
+        'cover',
+        'founded',
+        'type',
+        'no_of_students',
+        'website_link',
         'slug',
         'image',
     ];
+
+    protected $casts = [
+        'image' => 'array',
+    ];
+
+
    public function user()
    {
         return $this->belongsTo(User::class);
