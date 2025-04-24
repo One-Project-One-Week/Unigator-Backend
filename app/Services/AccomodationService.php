@@ -13,7 +13,7 @@ class AccomodationService extends CommonService
 
     public function getDataById($id)
     {
-        return $this->connection()->query()->where('id', $id)->get();
+        return $this->connection()->query()->where('id', $id)->firstOrFail();
     }
 
     public function createData(array $data)
@@ -23,7 +23,7 @@ class AccomodationService extends CommonService
 
     public function updateData($id, array $data)
     {
-        return $this->connection()->query()->where('id', $id)->update($data);
+        return $this->connection()->findOrFail($id)->update($data);
     }
 
     public function deleteData($id)
