@@ -32,6 +32,8 @@ class StoreProgramRequest extends FormRequest
             'application_requirement' => 'required|array',
             'intake' => 'required|string|max:255',
             'payment_plan' => 'required|in:monthly,per_semester,no_installements',
+            'category_id' => 'required|integer|exists:categories,id',
+            'level' => 'required|string|max:255',
         ];
     }
 

@@ -26,7 +26,7 @@ class ProgramController extends Controller
     {
         //
         try {
-            $programList = ProgramResources::collection($this->programmservice->getAll());
+            $programList = ProgramResources::collection($this->programmservice->getAll()->load('category'));
             return $this->success('program-success', $programList, 'Programs retrieved successfully', 200);
         } catch (\Exception $e) {
             return $this->fail('program-fail', null, $e->getMessage(), 500);
@@ -52,7 +52,7 @@ class ProgramController extends Controller
         $validatedData['detail'] = json_encode($validatedData['detail']);
         $validatedData['application_requirement'] = json_encode($validatedData['application_requirement']);
         try {
-            $resProgram = ProgramResources::make($this->programmservice->createData($validatedData));
+            $resProgram = ProgramResources::make($this->programmservice->createData($validatedData)->load('category'));
             return $this->success('program-success', $resProgram, 'Program created successfully', 201);
         } catch (\Exception $e) {
             return $this->fail('program-fail', null, $e->getMessage(), 500);
@@ -66,7 +66,7 @@ class ProgramController extends Controller
     {
         //
         try {
-            $program = ProgramResources::make($this->programmservice->getDataById($id));
+            $program = ProgramResources::make($this->programmservice->getDataById($id)->load('category'));
             return $this->success('program-success', $program, 'Program retrieved successfully', 200);
         } catch (\Exception $e) {
             return $this->fail('program-fail', null, $e->getMessage(), 500);
@@ -98,7 +98,7 @@ class ProgramController extends Controller
         $validatedData['application_requirement'] = json_encode($validatedData['application_requirement']);
         try {
             $program = $this->programmservice->updateData($id, $validatedData);
-            $resProgram = ProgramResources::make($this->programmservice->getDataById($id));
+            $resProgram = ProgramResources::make($this->programmservice->getDataById($id)->load('category'));
             return $this->success('program-success', $resProgram, 'Program updated successfully', 200);
         } catch (\Exception $e) {
             return $this->fail('program-fail', null, $e->getMessage(), 500);

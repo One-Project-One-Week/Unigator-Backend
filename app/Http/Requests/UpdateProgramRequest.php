@@ -32,6 +32,7 @@ class UpdateProgramRequest extends FormRequest
             'application_requirement' => 'sometimes|required|array',
             'intake' => 'sometimes|required|string|max:255',
             'payment_plan' => 'sometimes|required|in:monthly,per_semester,no_installements',
+            'category_id' => 'sometimes|required|integer|exists:categories,id',
         ];
     }
 

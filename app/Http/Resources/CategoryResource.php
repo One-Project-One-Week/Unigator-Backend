@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\ProgramResources;
 
 class CategoryResource extends JsonResource
 {
@@ -17,6 +18,7 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            // 'programs' => ProgramResources::collection($this->whenLoaded('programs')),
         ];
     }
 }
