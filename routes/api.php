@@ -25,9 +25,9 @@ Route::get('/university', [UniversityController::class, 'allUniversities']);
 Route::get('/university/top', [UniversityController::class, 'topUniversities']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::put('/university/update', [UniversityController::class, 'updateInfo']);
+    Route::put('/university/update', [UniversityController::class, 'updateInfo'])->middleware('university');
     Route::get('/university/{slug}', [UniversityController::class, 'detail']);
-
+    Route::get('/university/dashboard', [UniversityController::class, 'dashboard'])->middleware('university');
 });
 
 Route::apiResource('/programs', ProgramController::class);
@@ -38,9 +38,6 @@ Route::apiResource('/categories', CategoryController::class);
 
 Route::put('/accomodation/{id}', [AccomodationController::class, 'UpdateAccomodation']);
 
-<<<<<<< HEAD
 Route::delete('/accomodation/{id}', [AccomodationController::class, 'deleteAccomodation']);
 
-=======
 Route::delete('/accomodation/{id}', [AccomodationController::class, 'deleteAccomodation']);
->>>>>>> 6a67277d0e60a757fd53f31822a921f89f98d5fd

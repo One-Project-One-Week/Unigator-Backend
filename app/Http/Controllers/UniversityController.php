@@ -30,18 +30,35 @@ class UniversityController extends Controller
         } else {
             $perPage = 10;
         }
-        $search = $request->query('search');
+        $search = $request->search;
+        $city = $request->city;
+        $country = $request->country;
+        $price = $request->price;
 
         $universities = University::with('user')
             ->when($search, function ($query, $search) {
-                $query->where(function($q) use ($search) {
-                    $q->where('slug', 'like', '%'.$search.'%')
-                        ->orWhereHas('user', function($q) use ($search) {
-                            $q->where('name', 'like', '%'.$search.'%');
+                $query->where(function ($q) use ($search) {
+                    $q->where('slug', 'like', '%' . $search . '%')
+                        ->orWhereHas('user', function ($q2) use ($search) {
+                            $q2->where('name', 'like', '%' . $search . '%');
                         });
                 });
             })
-            ->orderBy('ranking', 'asc')->paginate($perPage);
+            ->when($country, function ($query, $country) {
+                $query->where('country', $country);
+            })
+            ->when($city, function ($query, $city) {
+                $query->where('city', $city);
+            })
+            ->when($price, function ($query, $price) {
+                $query->whereHas('programs', function ($q) use ($price) {
+                    $q->groupBy('university_id')
+                        ->havingRaw('AVG(price) <= ?', [$price]);
+                });
+            })
+            ->orderBy('ranking', 'asc')
+            ->paginate($perPage);
+
         if (!$universities) {
             return $this->fail('not-found', null, "No University Available.", 404);
         }
@@ -77,8 +94,25 @@ class UniversityController extends Controller
         if (!$university) {
             return $this->fail('not-found', null, "University Not Found", 404);
         }
+        $similarUniversities = University::where('country', $university->country)
+            ->where('id', '!=', $university->id)
+            ->take(2)
+            ->get();
+
+        
 
         return $this->success('success', UniversityDetailResource::make($university), "University Details", 200);
+    }
+
+    public function dashboard()
+    {
+        $user = Auth::user();
+        $university = University::with(['programs', 'accommodations'])->where('user_id', $user->id)->first();
+        if (!$university) {
+            return $this->fail('not-found', null, "University Not Found", 404);
+        }
+
+        return $this->success('success', UniversityDetailResource::make($university), "University Dashboard", 200);
     }
 
     public function updateInfo(UpdateProfileRequest $request, UpdateUniversityRequest $uniRequest)
