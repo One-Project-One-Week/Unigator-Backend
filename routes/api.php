@@ -12,7 +12,9 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+
 Route::post('/accomodation', [AccomodationController::class, 'createAccomodation']);
+
 
 Route::post('/register', [AuthController::class, 'userRegister']);
 Route::post('/university/register', [AuthController::class, 'uniRegister']);
@@ -31,3 +33,5 @@ Route::apiResource('/programs', ProgramController::class);
 Route::put('/accomodation/{id}', [AccomodationController::class, 'updateAccomodation']);
 
 Route::delete('/accomodation/{id}', [AccomodationController::class, 'deleteAccomodation']);
+
+
