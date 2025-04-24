@@ -48,14 +48,20 @@ class RatingController extends Controller
             if (!$user || $user->role !== "0") {
                 return $this->fail('forbidden', null, "Only student accounts can give ratings", 403);
             } 
+
+
             else {
 
-
-                $data = Rating::create([
-                    "user_id" => $validatedData['user_id'],
-                    "university_id" => $validatedData['university_id'],
-                    "rating_rate" => $validatedData['rating_rate'],
-                ]);
+                // Check if the user has already rated the university
+                $data = Rating::updateOrCreate(
+                    [
+                        'user_id' => $validatedData['user_id'],
+                        'university_id' => $validatedData['university_id'],
+                    ],
+                    [
+                        'rating_rate' => $validatedData['rating_rate'],
+                    ]
+                );
 
                 return $this->success("success", $data, "Rating created successfully", 201);
             }
