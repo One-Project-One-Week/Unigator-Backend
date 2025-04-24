@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\AccomodationController;
@@ -31,7 +32,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 });
 
 Route::apiResource('/programs', ProgramController::class);
-Route::apiResource('/programs', ProgramController::class);
+Route::apiResource('/categories', CategoryController::class);
 
 
 
