@@ -30,10 +30,10 @@ class UniversityController extends Controller
         } else {
             $perPage = 10;
         }
-        $search = $request->search;
-        $city = $request->city;
-        $country = $request->country;
-        $type = $request->type;
+        $search = $request->query('search');
+        $city = $request->query('city');
+        $country = $request->query('country');
+        $type = $request->query('type');
 
         $universities = University::with(['user', 'ratings'])
             ->withAvg('ratings', 'rating_rate')
@@ -52,7 +52,7 @@ class UniversityController extends Controller
                 $query->where('city', $city);
             })
             ->when($type, function ($query, $type) {
-                $query->where('city', $type);
+                $query->where('type', $type);
             })
             ->orderByDesc('ratings_avg_rating_rate')
             ->paginate($perPage);
@@ -79,10 +79,10 @@ class UniversityController extends Controller
     public function topUniversities()
     {
         $universities = University::with(['user', 'ratings'])
-                        ->withAvg('ratings', 'rating_rate')
-                        ->orderBy('ranking', 'asc')
-                        ->take(6)
-                        ->get();
+            ->withAvg('ratings', 'rating_rate')
+            ->orderBy('ranking', 'asc')
+            ->take(6)
+            ->get();
         if (!$universities) {
             return $this->fail('not-found', null, "No University Available.", 404);
         }
@@ -93,8 +93,8 @@ class UniversityController extends Controller
     public function detail($slug)
     {
         $university = University::with(['programs', 'accommodations', 'ratings'])
-                    ->withAvg('ratings', 'rating_rate')
-                    ->where('slug', $slug)->first();
+            ->withAvg('ratings', 'rating_rate')
+            ->where('slug', $slug)->first();
         if (!$university) {
             return $this->fail('not-found', null, "University Not Found", 404);
         }
@@ -126,6 +126,9 @@ class UniversityController extends Controller
 
         $user = Auth::user();
         $university = $user->university;
+        if (!$university) {
+            return $this->fail('not-found', null, 'University not found for this user.', 404);
+        }
 
         $user->update($validatedData);
 
@@ -157,7 +160,13 @@ class UniversityController extends Controller
         }
 
         $university->update($validatedUniData);
-        $university->load(['user', 'programs']);
+        $university->load(['user', 'programs', 'ratings']);
+        $similarUniversities = University::where('country', $university->country)
+            ->where('id', '!=', $university->id)
+            ->take(2)
+            ->get();
+
+        $university->similar_universities = $similarUniversities;
 
         return $this->success('success', UniversityDetailResource::make($university), "University profile updated successfully", 200);
     }

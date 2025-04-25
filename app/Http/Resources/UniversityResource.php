@@ -16,10 +16,12 @@ class UniversityResource extends JsonResource
     {
         return [
             'name' => $this->user->name,
+            'role' => $this->user->role,
             'logo' => $this->logo,
             'country' => $this->country,
             'description' => $this->description,
             'city' => $this->city,
+            'type' => $this->type,
             'slug' => $this->slug,
             'ranking' => $this->ranking,
             'rating' => $this->ratings_avg_rating_rate,

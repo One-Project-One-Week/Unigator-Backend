@@ -79,9 +79,9 @@ class AuthController extends Controller
         if($user->role == '1') {
             $university = University::where('user_id', $user->id)->first();
             $university->load('user');
-            return $this->success('success', ["token" => $token, "data" => UniversityResource::make($university)], "Login success!", 200);
+            return $this->success('success', ["token" => $token, "user" => UniversityResource::make($university)], "Login success!", 200);
         }
-        return $this->success('success', ["token" => $token, "data" => UserResource::make($user)], "Login success!", 200);
+        return $this->success('success', ["token" => $token, "user" => UserResource::make($user)], "Login success!", 200);
     }
 
 }
