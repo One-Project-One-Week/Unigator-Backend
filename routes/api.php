@@ -40,6 +40,8 @@ Route::get('/avgFees', [ProgramController::class, 'getAverageProgramCost']);
 Route::get('/findProgram', [ProgramController::class, 'getPrograms']);
 
 Route::post('/accomodation', [AccomodationController::class, 'createAccomodation']);
+Route::get('/accomodation', [AccomodationController::class, 'getAllAccomodations']);
+
 
 Route::put('/accomodation/{id}', [AccomodationController::class, 'UpdateAccomodation']);
 

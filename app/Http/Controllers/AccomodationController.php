@@ -27,6 +27,27 @@ class AccomodationController extends Controller
         $this->accomodationService = $accomodationService;
     }
 
+    public function getAllAccomodations(Request $request)
+    {
+        try {
+            $accomodations = AccomodationResource::collection(Accomodation::all());
+    
+            return $this->success(
+                'accomodation-success',
+                $accomodations,
+                'All accommodations fetched successfully',
+                200
+            );
+        } catch (Exception $e) {
+            return $this->fail(
+                'accomodation-fail',
+                null,
+                $e->getMessage(),
+                500
+            );
+        }
+    }
+
     public function createAccomodation(CreateAccomodationRequest $request)
     {
         $validatedData = $request->validated();
