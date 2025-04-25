@@ -30,8 +30,18 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/university/dashboard', [UniversityController::class, 'dashboard'])->middleware('university');
 });
 
-Route::apiResource('/programs', ProgramController::class);
-Route::apiResource('/categories', CategoryController::class);
+Route::get('/programs', [ProgramController::class, 'index']);
+Route::get('/programs/{id}', [ProgramController::class, 'show']);
+Route::post('/programs', [ProgramController::class, 'store']);
+Route::put('/programs/{id}', [ProgramController::class, 'update']);
+Route::delete('/programs/{id}', [ProgramController::class, 'destroy']);
+
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/{id}', [CategoryController::class, 'show']);
+Route::post('/categories', [CategoryController::class, 'store']);
+Route::put('/categories/{id}', [CategoryController::class, 'update']);
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
+
 
 Route::get('/avgFees', [ProgramController::class, 'getAverageProgramCost']);
 Route::get('/findProgram', [ProgramController::class, 'getPrograms']);

@@ -38,7 +38,7 @@ class Program extends Model
 
     public function universities()
     {
-        return $this->belongsTo(University::class);
+        return $this->belongsTo(University::class, 'university_id', 'id');
     }
 
     public function category()
