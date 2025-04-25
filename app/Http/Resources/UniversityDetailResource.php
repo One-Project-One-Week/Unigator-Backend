@@ -28,7 +28,7 @@ class UniversityDetailResource extends JsonResource
             'no_of_students' => $this->no_of_students,
             'website_link' => $this->website_link,
             'image' => $this->image,
-            'programs' => ProgramResources::collection($this->whenLoaded('programs')),
+            'programs' => ProgramResource::collection($this->whenLoaded('programs')),
             'accommodations' => AccomodationResource::collection($this->whenLoaded('accommodations'))
         ];
     }

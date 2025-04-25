@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\CategoryResource;
 
-class ProgramResources extends JsonResource
+class ProgramResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,11 +20,12 @@ class ProgramResources extends JsonResource
             'university_id' => $this->university_id,
             'name' => $this->name,
             'category_id' => $this->category_id,
-            'category' => CategoryResource::make($this->whenLoaded('category')),
+            // 'category' => CategoryResource::make($this->whenLoaded('category')),
             'detail' => $this->detail,
+            // 'detail' => json_decode($this->detail),
             'degree_type' => $this->degree_type,
             'duration' => $this->duration,
-            'application_requirement' => $this->application_requirement,
+            // 'application_requirement' => json_decode($this->application_requirement),
             'intake' => $this->intake,
             'payment_plan' => $this->payment_plan,
             'created_at' => $this->created_at,

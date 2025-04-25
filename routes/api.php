@@ -35,7 +35,7 @@ Route::get('/programs/search', [ProgramController::class, 'getPrograms']);
 Route::apiResource('/programs', ProgramController::class);
 Route::apiResource('/categories', CategoryController::class);
 
-
+Route::get('/avgFees', [ProgramController::class, 'getAverageProgramCost']);
 
 
 Route::put('/accomodation/{id}', [AccomodationController::class, 'UpdateAccomodation']);
