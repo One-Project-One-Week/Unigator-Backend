@@ -34,6 +34,7 @@ Route::apiResource('/programs', ProgramController::class);
 Route::apiResource('/categories', CategoryController::class);
 
 Route::get('/avgFees', [ProgramController::class, 'getAverageProgramCost']);
+Route::get('/findProgram', [ProgramController::class, 'getPrograms']);
 
 Route::post('/accomodation', [AccomodationController::class, 'createAccomodation']);
 

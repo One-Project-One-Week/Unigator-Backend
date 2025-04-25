@@ -36,59 +36,47 @@ class ProgramController extends Controller
         }
     }
 
-
     public function getPrograms(Request $request)
     {
-        $perPage = $request->query('per_page');
-        if ($perPage) {
-            $perPage = $request->query('per_page') > 0 ? $request->query('per_page') : 10;
-        } else {
-            $perPage = 10;
-        }
-
+        $perPage = $request->query('per_page', 10);
         $search = $request->query('search');
         $country = $request->query('country');
         $city = $request->query('city');
-        $budget = $request->query('budget'); // e.g., 700
+        $budget = $request->query('budget');
         $type = $request->query('type'); // degree_type
         $level = $request->query('level');
+        $maxBudget = $budget * 1.15;
+        \Log::info('Budget:', ['budget' => $budget, 'maxBudget' => $budget * 1.15]);
+        // Right before the pagination, add:
+
 
         $programs = Program::with(['category', 'universities'])
             ->when($search, function ($query, $search) {
                 $query->where('name', 'like', "%$search%")
-                    ->orWhereHas('category', function ($q) use ($search) {
-                        $q->where('name', 'like', "%$search%");
-                    });
+                    ->orWhereHas('category', fn($q) => $q->where('name', 'like', "%$search%"));
             })
-            ->when($country, function ($query, $country) {
-                $query->whereHas('universities', function ($q) use ($country) {
-                    $q->where('country', $country);
-                });
-            })
-            ->when($city, function ($query, $city) {
-                $query->whereHas('universities', function ($q) use ($city) {
-                    $q->where('city', $city);
-                });
-            })
-            ->when($budget, function ($query, $budget) {
-                $query->whereJsonContains('detail', function ($detail) use ($budget) {
-                    foreach ($detail as $year) {
-                        if (isset($year['tuitionFees']) && $year['tuitionFees'] <= $budget) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
+            ->when(
+                $country,
+                fn($query, $country) =>
+                $query->whereHas('universities', fn($q) => $q->where('country', $country))
+            )
+            ->when(
+                $city,
+                fn($query, $city) =>
+                $query->whereHas('universities', fn($q) => $q->where('city', $city))
+            )
+            ->when($budget, function ($query) use ($maxBudget) {
+                $query->where('average_cost', '<=', $maxBudget);
             })
             ->when($type, fn($query, $type) => $query->where('degree_type', $type))
             ->when($level, fn($query, $level) => $query->where('level', $level))
             ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+            ->get();
 
-        $resProgram = ProgramResource::collection($programs);
+
 
         return $this->success('program-success', [
-            'data' => $resProgram,
+            'data' => ProgramResource::collection($programs),
             'meta' => [
                 'current_page' => $programs->currentPage(),
                 'last_page' => $programs->lastPage(),
@@ -105,7 +93,6 @@ class ProgramController extends Controller
 
 
 
-
     public function getAverageProgramCost()
     {
         $programs = Program::all(); // Get all programs
@@ -113,7 +100,7 @@ class ProgramController extends Controller
 
         foreach ($programs as $program) {
             // Decode the 'detail' field if it's a JSON string
-            $details = json_decode($program->detail, true);
+            $details = $program->detail;
 
             // Check if the decoded details are valid
             if (is_array($details)) {
@@ -127,16 +114,16 @@ class ProgramController extends Controller
 
                 // Calculate the average for this program
                 $averageFeesPerProgram[] = [
-                    'program_id' => $program->uuid,
+                    'program_id' => $program->name,
                     'average_tuition_fee' => collect($tuitionFees)->avg()
                 ];
             }
         }
 
-        // return response()->json([
-        //     'average_fees_per_program' => $averageFeesPerProgram
-        // ]);
-        return $averageFeesPerProgram;
+        return response()->json([
+            'average_fees_per_program' => $averageFeesPerProgram
+        ]);
+        // return $averageFeesPerProgram;
     }
 
 
@@ -156,9 +143,14 @@ class ProgramController extends Controller
     {
         //
         $validatedData = $request->validated();
+
         // $validatedData['detail'] = json_encode($validatedData['detail']);
         // $validatedData['application_requirement'] = json_encode($validatedData['application_requirement']);
         try {
+            $totalFees = array_sum(array_column($validatedData['detail'], 'fees'));
+            $yearsCount = count($validatedData['detail']);
+            $average = $yearsCount > 0 ? $totalFees / $yearsCount : 0;
+            $validatedData['average_cost'] = round($average, 2);
             $resProgram = ProgramResource::make($this->programmservice->createData($validatedData)->load('category'));
             return $this->success('program-success', $resProgram, 'Program created successfully', 201);
         } catch (\Exception $e) {
