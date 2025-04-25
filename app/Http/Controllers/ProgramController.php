@@ -38,12 +38,7 @@ class ProgramController extends Controller
 
     public function getPrograms(Request $request)
     {
-        $perPage = $request->query('per_page');
-        if ($perPage) {
-            $perPage = $request->query('per_page') > 0 ? $request->query('per_page') : 10;
-        } else {
-            $perPage = 10;
-        }
+        $perPage = $request->query('per_page', 10);
         $search = $request->query('search');
         $country = $request->query('country');
         $city = $request->query('city');
@@ -54,19 +49,13 @@ class ProgramController extends Controller
         // Calculate max budget if budget parameter exists
         $maxBudget = $budget ? $budget * 1.15 : null;
 
-        // \Log::info('Budget filter:', [
-        //     'requested_budget' => $budget,
-        //     'calculated_max_budget' => $maxBudget
-        // ]);
-
-        // Build query
-        $query = Program::with(['category', 'universities'])
-            ->when($search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%$search%")
-                        ->orWhereHas('category', fn($q) => $q->where('name', 'like', "%$search%"));
-                });
-            })
+        // Build query with nested eager loading
+        $query = Program::with('universities')->when($search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhereHas('category', fn($q) => $q->where('name', 'like', "%$search%"));
+            });
+        })
             ->when($country, function ($query, $country) {
                 $query->whereHas('universities', fn($q) => $q->where('country', $country));
             })
@@ -77,14 +66,14 @@ class ProgramController extends Controller
                 $query->where('average_cost', '<=', $maxBudget);
             })
             ->when($type, fn($query, $type) => $query->where('degree_type', $type))
-            ->when($level, fn($query, $level) => $query->where('level', $level))
-            ->orderBy('created_at', 'desc');
+            ->when($level, fn($query, $level) => $query->where('level', $level));
 
-        // // Debug the final query
-        // \Log::debug('Final query:', [
-        //     'sql' => $query->toSql(),
-        //     'bindings' => $query->getBindings()
-        // ]);
+        // Apply ordering based on budget presence
+        if ($budget) {
+            $query->orderBy('average_cost', 'desc');  // Most expensive first when budget exists
+        } else {
+            $query->orderBy('name', 'asc');  // A-Z when no budget
+        }
 
         // Execute paginated query
         $programs = $query->paginate($perPage);
@@ -103,9 +92,6 @@ class ProgramController extends Controller
             ]
         ], 'Programs retrieved successfully', 200);
     }
-
-
-
 
     public function getAverageProgramCost()
     {
