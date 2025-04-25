@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProgramController;
 
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RatingController;
@@ -28,6 +29,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/university/update', [UniversityController::class, 'updateInfo'])->middleware('university');
     Route::get('/university/{slug}', [UniversityController::class, 'detail']);
     Route::get('/university/dashboard', [UniversityController::class, 'dashboard'])->middleware('university');
+
+    Route::get('/user', [UserController::class, 'getUserProfile']);
+    Route::put('/user', [UserController::class, 'updateProfile']);
+
 });
 
 Route::apiResource('/programs', ProgramController::class);
@@ -44,3 +49,7 @@ Route::delete('/accomodation/{id}', [AccomodationController::class, 'deleteAccom
 
 Route::get('/rating', [RatingController::class, 'getRating']);
 Route::post('/rating', [RatingController::class, 'createRating']);
+
+// fetch user profile
+
+
