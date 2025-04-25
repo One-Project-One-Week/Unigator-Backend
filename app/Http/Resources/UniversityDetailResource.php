@@ -31,7 +31,7 @@ class UniversityDetailResource extends JsonResource
             'image' => $this->image,
             'programs' => ProgramResources::collection($this->whenLoaded('programs')),
             'accommodations' => AccomodationResource::collection($this->whenLoaded('accommodations')),
-            'similar_universities' => UniversityResource::collection($this->resource->similar_universities)
+            'similar_universities' => UniversityResource::collection($this->resource->similar_universities) ?? collect()
         ];
     }
 }
