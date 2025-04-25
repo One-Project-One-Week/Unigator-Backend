@@ -24,6 +24,7 @@ class Program extends Model
     protected $fillable = [
         'university_id',
         'name',
+        'category_id',
         'detail',
         'degree_type',
         'duration',

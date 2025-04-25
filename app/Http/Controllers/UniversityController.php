@@ -30,18 +30,33 @@ class UniversityController extends Controller
         } else {
             $perPage = 10;
         }
-        $search = $request->query('search');
+        $search = $request->search;
+        $city = $request->city;
+        $country = $request->country;
+        $type = $request->type;
 
-        $universities = University::with('user')
+        $universities = University::with(['user', 'ratings'])
+            ->withAvg('ratings', 'rating_rate')
             ->when($search, function ($query, $search) {
-                $query->where(function($q) use ($search) {
-                    $q->where('slug', 'like', '%'.$search.'%')
-                        ->orWhereHas('user', function($q) use ($search) {
-                            $q->where('name', 'like', '%'.$search.'%');
+                $query->where(function ($q) use ($search) {
+                    $q->where('slug', 'like', '%' . $search . '%')
+                        ->orWhereHas('user', function ($q2) use ($search) {
+                            $q2->where('name', 'like', '%' . $search . '%');
                         });
                 });
             })
-            ->orderBy('ranking', 'asc')->paginate($perPage);
+            ->when($country, function ($query, $country) {
+                $query->where('country', $country);
+            })
+            ->when($city, function ($query, $city) {
+                $query->where('city', $city);
+            })
+            ->when($type, function ($query, $type) {
+                $query->where('city', $type);
+            })
+            ->orderByDesc('ratings_avg_rating_rate')
+            ->paginate($perPage);
+
         if (!$universities) {
             return $this->fail('not-found', null, "No University Available.", 404);
         }
@@ -63,7 +78,11 @@ class UniversityController extends Controller
 
     public function topUniversities()
     {
-        $universities = University::orderBy('ranking', 'asc')->take(6)->get();
+        $universities = University::with(['user', 'ratings'])
+                        ->withAvg('ratings', 'rating_rate')
+                        ->orderBy('ranking', 'asc')
+                        ->take(6)
+                        ->get();
         if (!$universities) {
             return $this->fail('not-found', null, "No University Available.", 404);
         }
@@ -73,12 +92,31 @@ class UniversityController extends Controller
 
     public function detail($slug)
     {
-        $university = University::with(['programs', 'accommodations'])->where('slug', $slug)->first();
+        $university = University::with(['programs', 'accommodations', 'ratings'])
+                    ->withAvg('ratings', 'rating_rate')
+                    ->where('slug', $slug)->first();
+        if (!$university) {
+            return $this->fail('not-found', null, "University Not Found", 404);
+        }
+        $similarUniversities = University::where('country', $university->country)
+            ->where('id', '!=', $university->id)
+            ->take(2)
+            ->get();
+
+        $university->similar_universities = $similarUniversities;
+
+        return $this->success('success', UniversityDetailResource::make($university), "University Details", 200);
+    }
+
+    public function dashboard()
+    {
+        $user = Auth::user();
+        $university = University::with(['programs', 'accommodations'])->where('user_id', $user->id)->first();
         if (!$university) {
             return $this->fail('not-found', null, "University Not Found", 404);
         }
 
-        return $this->success('success', UniversityDetailResource::make($university), "University Details", 200);
+        return $this->success('success', UniversityDetailResource::make($university), "University Dashboard", 200);
     }
 
     public function updateInfo(UpdateProfileRequest $request, UpdateUniversityRequest $uniRequest)
