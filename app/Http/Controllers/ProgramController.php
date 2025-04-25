@@ -38,42 +38,56 @@ class ProgramController extends Controller
 
     public function getPrograms(Request $request)
     {
-        $perPage = $request->query('per_page', 10);
+        $perPage = $request->query('per_page');
+        if ($perPage) {
+            $perPage = $request->query('per_page') > 0 ? $request->query('per_page') : 10;
+        } else {
+            $perPage = 10;
+        }
         $search = $request->query('search');
         $country = $request->query('country');
         $city = $request->query('city');
         $budget = $request->query('budget');
-        $type = $request->query('type'); // degree_type
+        $type = $request->query('type');
         $level = $request->query('level');
-        $maxBudget = $budget * 1.15;
-        \Log::info('Budget:', ['budget' => $budget, 'maxBudget' => $budget * 1.15]);
-        // Right before the pagination, add:
 
+        // Calculate max budget if budget parameter exists
+        $maxBudget = $budget ? $budget * 1.15 : null;
 
-        $programs = Program::with(['category', 'universities'])
+        // \Log::info('Budget filter:', [
+        //     'requested_budget' => $budget,
+        //     'calculated_max_budget' => $maxBudget
+        // ]);
+
+        // Build query
+        $query = Program::with(['category', 'universities'])
             ->when($search, function ($query, $search) {
-                $query->where('name', 'like', "%$search%")
-                    ->orWhereHas('category', fn($q) => $q->where('name', 'like', "%$search%"));
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%")
+                        ->orWhereHas('category', fn($q) => $q->where('name', 'like', "%$search%"));
+                });
             })
-            ->when(
-                $country,
-                fn($query, $country) =>
-                $query->whereHas('universities', fn($q) => $q->where('country', $country))
-            )
-            ->when(
-                $city,
-                fn($query, $city) =>
-                $query->whereHas('universities', fn($q) => $q->where('city', $city))
-            )
-            ->when($budget, function ($query) use ($maxBudget) {
+            ->when($country, function ($query, $country) {
+                $query->whereHas('universities', fn($q) => $q->where('country', $country));
+            })
+            ->when($city, function ($query, $city) {
+                $query->whereHas('universities', fn($q) => $q->where('city', $city));
+            })
+            ->when($maxBudget, function ($query) use ($maxBudget) {
                 $query->where('average_cost', '<=', $maxBudget);
             })
             ->when($type, fn($query, $type) => $query->where('degree_type', $type))
             ->when($level, fn($query, $level) => $query->where('level', $level))
-            ->orderBy('created_at', 'desc')
-            ->get();
+            ->orderBy('created_at', 'desc');
 
+        // // Debug the final query
+        // \Log::debug('Final query:', [
+        //     'sql' => $query->toSql(),
+        //     'bindings' => $query->getBindings()
+        // ]);
 
+        // Execute paginated query
+        $programs = $query->paginate($perPage);
 
         return $this->success('program-success', [
             'data' => ProgramResource::collection($programs),
