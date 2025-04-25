@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProgramRequest;
 use App\Http\Requests\UpdateProgramRequest;
-use App\Http\Resources\ProgramResources;
+use App\Http\Resources\ProgramResource;
 use App\Models\Program;
 use App\Services\ProgramService;
 use App\Traits\HttpResponses;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class ProgramController extends Controller
@@ -27,12 +29,13 @@ class ProgramController extends Controller
     {
         //
         try {
-            $programList = ProgramResources::collection($this->programmservice->getAll()->load('category'));
+            $programList = ProgramResource::collection($this->programmservice->getAll()->load('category'));
             return $this->success('program-success', $programList, 'Programs retrieved successfully', 200);
         } catch (\Exception $e) {
             return $this->fail('program-fail', null, $e->getMessage(), 500);
         }
     }
+
 
     public function getPrograms(Request $request)
     {
@@ -42,18 +45,48 @@ class ProgramController extends Controller
         } else {
             $perPage = 10;
         }
-        $search = $request->query('search');
 
-        $programs = Program::with('category')
+        $search = $request->query('search');
+        $country = $request->query('country');
+        $city = $request->query('city');
+        $budget = $request->query('budget'); // e.g., 700
+        $type = $request->query('type'); // degree_type
+        $level = $request->query('level');
+
+        $programs = Program::with(['category', 'universities'])
             ->when($search, function ($query, $search) {
-                $query->where('name', 'like', '%' . $search . '%')
+                $query->where('name', 'like', "%$search%")
                     ->orWhereHas('category', function ($q) use ($search) {
-                        $q->where('name', 'like', '%' . $search . '%');
+                        $q->where('name', 'like', "%$search%");
                     });
             })
-            ->orderBy('created_at', 'desc')->paginate($perPage);
+            ->when($country, function ($query, $country) {
+                $query->whereHas('universities', function ($q) use ($country) {
+                    $q->where('country', $country);
+                });
+            })
+            ->when($city, function ($query, $city) {
+                $query->whereHas('universities', function ($q) use ($city) {
+                    $q->where('city', $city);
+                });
+            })
+            ->when($budget, function ($query, $budget) {
+                $query->whereJsonContains('detail', function ($detail) use ($budget) {
+                    foreach ($detail as $year) {
+                        if (isset($year['tuitionFees']) && $year['tuitionFees'] <= $budget) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+            })
+            ->when($type, fn($query, $type) => $query->where('degree_type', $type))
+            ->when($level, fn($query, $level) => $query->where('level', $level))
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
 
-        $resProgram = ProgramResources::collection($programs);
+        $resProgram = ProgramResource::collection($programs);
+
         return $this->success('program-success', [
             'data' => $resProgram,
             'meta' => [
@@ -68,6 +101,45 @@ class ProgramController extends Controller
             ]
         ], 'Programs retrieved successfully', 200);
     }
+
+
+
+
+
+    public function getAverageProgramCost()
+    {
+        $programs = Program::all(); // Get all programs
+        $averageFeesPerProgram = [];
+
+        foreach ($programs as $program) {
+            // Decode the 'detail' field if it's a JSON string
+            $details = json_decode($program->detail, true);
+
+            // Check if the decoded details are valid
+            if (is_array($details)) {
+                $tuitionFees = [];
+
+                // Loop through each detail to get the tuition fees
+                foreach ($details as $detail) {
+                    // Assuming 'tuitionFees' is a key inside each detail
+                    $tuitionFees[] = $detail['fees'];
+                }
+
+                // Calculate the average for this program
+                $averageFeesPerProgram[] = [
+                    'program_id' => $program->uuid,
+                    'average_tuition_fee' => collect($tuitionFees)->avg()
+                ];
+            }
+        }
+
+        // return response()->json([
+        //     'average_fees_per_program' => $averageFeesPerProgram
+        // ]);
+        return $averageFeesPerProgram;
+    }
+
+
     /**
      * Show the form for creating a new resource.
      */
@@ -84,10 +156,10 @@ class ProgramController extends Controller
     {
         //
         $validatedData = $request->validated();
-        $validatedData['detail'] = json_encode($validatedData['detail']);
-        $validatedData['application_requirement'] = json_encode($validatedData['application_requirement']);
+        // $validatedData['detail'] = json_encode($validatedData['detail']);
+        // $validatedData['application_requirement'] = json_encode($validatedData['application_requirement']);
         try {
-            $resProgram = ProgramResources::make($this->programmservice->createData($validatedData)->load('category'));
+            $resProgram = ProgramResource::make($this->programmservice->createData($validatedData)->load('category'));
             return $this->success('program-success', $resProgram, 'Program created successfully', 201);
         } catch (\Exception $e) {
             return $this->fail('program-fail', null, $e->getMessage(), 500);
@@ -101,7 +173,7 @@ class ProgramController extends Controller
     {
         //
         try {
-            $program = ProgramResources::make($this->programmservice->getDataById($id)->load('category'));
+            $program = ProgramResource::make($this->programmservice->getDataById($id)->load('category'));
             return $this->success('program-success', $program, 'Program retrieved successfully', 200);
         } catch (\Exception $e) {
             return $this->fail('program-fail', null, $e->getMessage(), 500);
@@ -115,7 +187,7 @@ class ProgramController extends Controller
     {
         //
         try {
-            $program = ProgramResources::make($this->programmservice->getDataById($id));
+            $program = ProgramResource::make($this->programmservice->getDataById($id));
             return $this->success('program-success', $program, 'Program retrieved successfully', 200);
         } catch (\Exception $e) {
             return $this->fail('program-fail', null, $e->getMessage(), 500);
@@ -129,11 +201,11 @@ class ProgramController extends Controller
     {
         //
         $validatedData = $request->validated();
-        $validatedData['detail'] = json_encode($validatedData['detail']);
-        $validatedData['application_requirement'] = json_encode($validatedData['application_requirement']);
+        // $validatedData['detail'] = json_encode($validatedData['detail']);
+        // $validatedData['application_requirement'] = json_encode($validatedData['application_requirement']);
         try {
             $program = $this->programmservice->updateData($id, $validatedData);
-            $resProgram = ProgramResources::make($this->programmservice->getDataById($id)->load('category'));
+            $resProgram = ProgramResource::make($this->programmservice->getDataById($id)->load('category'));
             return $this->success('program-success', $resProgram, 'Program updated successfully', 200);
         } catch (\Exception $e) {
             return $this->fail('program-fail', null, $e->getMessage(), 500);
