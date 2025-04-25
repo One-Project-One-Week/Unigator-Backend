@@ -34,8 +34,9 @@ class UniversityController extends Controller
         $city = $request->query('city');
         $country = $request->query('country');
         $type = $request->query('type');
+        $budget = $request->query('budget');
 
-        $universities = University::with(['user', 'ratings'])
+        $universities = University::with(['user', 'ratings', 'programs'])
             ->withAvg('ratings', 'rating_rate')
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -50,6 +51,11 @@ class UniversityController extends Controller
             })
             ->when($city, function ($query, $city) {
                 $query->where('city', $city);
+            })
+            ->when($budget, function ($query, $budget) {
+                $query->whereHas('programs', function ($q) use ($budget) {
+                    $q->where('average_cost', '<=', $budget);
+                });
             })
             ->when($type, function ($query, $type) {
                 $query->where('type', $type);
