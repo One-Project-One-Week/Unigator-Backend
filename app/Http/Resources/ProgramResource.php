@@ -28,6 +28,7 @@ class ProgramResource extends JsonResource
             // 'application_requirement' => json_decode($this->application_requirement),
             'intake' => $this->intake,
             'payment_plan' => $this->payment_plan,
+            'average_cost' => $this->average_cost,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
