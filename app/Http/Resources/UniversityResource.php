@@ -22,6 +22,7 @@ class UniversityResource extends JsonResource
             'city' => $this->city,
             'slug' => $this->slug,
             'ranking' => $this->ranking,
+            'rating' => $this->ratings_avg_rating_rate,
             'count' => $this->programs->count(),
             'program_names' => $this->programs->pluck('name')->take(3),
         ];

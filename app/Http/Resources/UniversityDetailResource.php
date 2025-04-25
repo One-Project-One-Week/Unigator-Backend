@@ -23,13 +23,15 @@ class UniversityDetailResource extends JsonResource
             'cover' => $this->cover,
             'slug' => $this->slug,
             'ranking' => $this->ranking,
+            'rating' => $this->ratings_avg_rating_rate,
             'type' => $this->type,
             'founded' => $this->founded,
             'no_of_students' => $this->no_of_students,
             'website_link' => $this->website_link,
             'image' => $this->image,
             'programs' => ProgramResources::collection($this->whenLoaded('programs')),
-            'accommodations' => AccomodationResource::collection($this->whenLoaded('accommodations'))
+            'accommodations' => AccomodationResource::collection($this->whenLoaded('accommodations')),
+            'similar_universities' => UniversityResource::collection($this->resource->similar_universities)
         ];
     }
 }

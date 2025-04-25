@@ -44,7 +44,7 @@ class AuthController extends Controller
         $validatedUniData = $uniRequest->validated();
 
         if($uniRequest->hasFile('logo')) {
-            $filename = $this->uniService->handleImageUpload($uniRequest->file('logo'));
+            $filename = $this->uniService->handleLogoUpload($uniRequest->file('logo'));
             if (!$filename) {
                 return $this->fail('upload-error', null, "Logo Upload Failed", 400);
             }
