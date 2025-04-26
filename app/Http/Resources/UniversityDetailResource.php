@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\ProgramResource;
 
 class UniversityDetailResource extends JsonResource
 {
@@ -20,6 +21,7 @@ class UniversityDetailResource extends JsonResource
             'description' => $this->description,
             'country' => $this->country,
             'city' => $this->city,
+            'address' => $this->address,
             'cover' => $this->cover,
             'slug' => $this->slug,
             'ranking' => $this->ranking,
@@ -31,7 +33,10 @@ class UniversityDetailResource extends JsonResource
             'image' => $this->image,
             'programs' => ProgramResource::collection($this->whenLoaded('programs')),
             'accommodations' => AccomodationResource::collection($this->whenLoaded('accommodations')),
-            'similar_universities' => UniversityResource::collection($this->resource->similar_universities) ?? collect()
+            'similar_universities' => UniversityResource::collection($this->resource->similar_universities) ?? collect(),
+            'levels' => $this->when(isset($this->levels), $this->levels),
+
+            "application_link" => $this->application_link,
         ];
     }
 }

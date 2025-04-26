@@ -19,15 +19,18 @@ class ProgramDetailResource extends JsonResource
             'university_id' => $this->university_id,
             'name' => $this->name,
             'category_id' => $this->category_id,
-            'category' => CategoryResource::make($this->whenLoaded('category')),
             'detail' => $this->detail,
             'degree_type' => $this->degree_type,
             'duration' => $this->duration,
-            'application_requirement' => $this->application_requirement,
             'intake' => $this->intake,
             'payment_plan' => $this->payment_plan,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'average_cost' => (float) $this->average_cost,
+            'application_requirement' => $this->application_requirement,
+            'level' => $this->level,
+            'category' => CategoryResource::make($this->whenLoaded('category')),
+            'universities' => new UniversityResource($this->whenLoaded('universities')),
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
 }

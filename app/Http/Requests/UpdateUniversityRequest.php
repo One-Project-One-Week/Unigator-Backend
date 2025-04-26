@@ -28,6 +28,7 @@ class UpdateUniversityRequest extends FormRequest
             'country' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'description' => 'nullable',
+            'address' => 'nullable|string|max:255',
             'slug' => 'required|alpha|unique:universities,slug,' . $this->user()->university->id,
             'image' => 'nullable|array',
             'type' => 'nullable|string|max:255',
@@ -35,7 +36,8 @@ class UpdateUniversityRequest extends FormRequest
             'no_of_students' => 'nullable|integer',
             'website_link' => 'nullable|url',
             'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'ranking' => 'nullable'
+            'ranking' => 'nullable',
+            'application_link'=> 'nullable|url',
         ];
     }
 

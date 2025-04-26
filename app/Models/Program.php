@@ -15,6 +15,7 @@ class Program extends Model
     protected $casts = [
         'detail' => 'array',
         'application_requirement' => 'array',
+        "intake" => 'array',
     ];
 
     use HasFactory, Notifiable, HasApiTokens;
@@ -33,7 +34,8 @@ class Program extends Model
         'intake',
         'payment_plan',
         'level',
-        'average_cost'
+        'average_cost',
+        'application_guideline'
     ];
 
     protected function casts(): array
@@ -48,11 +50,17 @@ class Program extends Model
 
     public function universities()
     {
-        return $this->belongsTo(University::class);
+        return $this->belongsTo(University::class, 'university_id', 'id');
     }
 
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function scholarships()
+    {
+        return $this->hasMany(Scholarship::class, 'program_id');
+    }
+    
 }

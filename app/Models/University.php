@@ -21,6 +21,7 @@ class University extends Model
         'description',
         'country',
         'city',
+        'address',
         'ranking',
         'logo',
         'cover',
@@ -30,6 +31,7 @@ class University extends Model
         'website_link',
         'slug',
         'image',
+        'application_link'
     ];
 
     protected $casts = [

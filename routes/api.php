@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\ScholarshipController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -33,8 +34,18 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/user', [UserController::class, 'updateProfile']);
 });
 
-Route::apiResource('/programs', ProgramController::class);
-Route::apiResource('/categories', CategoryController::class);
+Route::get('/programs', [ProgramController::class, 'index']);
+Route::get('/programs/{id}', [ProgramController::class, 'show']);
+Route::post('/programs', [ProgramController::class, 'store']);
+Route::put('/programs/{id}', [ProgramController::class, 'update']);
+Route::delete('/programs/{id}', [ProgramController::class, 'destroy']);
+
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/{id}', [CategoryController::class, 'show']);
+Route::post('/categories', [CategoryController::class, 'store']);
+Route::put('/categories/{id}', [CategoryController::class, 'update']);
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
+
 
 Route::get('/avgFees', [ProgramController::class, 'getAverageProgramCost']);
 Route::get('/findProgram', [ProgramController::class, 'getPrograms']);
@@ -50,3 +61,7 @@ Route::delete('/accomodation/{id}', [AccomodationController::class, 'deleteAccom
 
 Route::get('/rating', [RatingController::class, 'getRating']);
 Route::post('/rating', [RatingController::class, 'createRating']);
+
+
+Route::get('/scholarship', [ScholarshipController::class, 'getScholarshipInfoAll']);
+Route::get('/scholarship/{id}', [ScholarshipController::class, 'getScholarshipInfo']);
