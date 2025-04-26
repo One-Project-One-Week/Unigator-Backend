@@ -17,7 +17,7 @@ class UniversityResource extends JsonResource
         return [
             'name' => $this->user->name,
             'role' => $this->user->role,
-            'logo' => $this->logo,
+            'logo' => $this->logo ? 'logos/' . $this->logo : null,
             'country' => $this->country,
             'description' => $this->description,
             'city' => $this->city,
