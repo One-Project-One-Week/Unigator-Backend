@@ -26,6 +26,7 @@ class ProgramDetailResource extends JsonResource
             'payment_plan' => $this->payment_plan,
             'average_cost' => (float) $this->average_cost,
             'application_requirement' => $this->application_requirement,
+            'application_guideline' => $this->application_guideline,
             'level' => $this->level,
             'category' => CategoryResource::make($this->whenLoaded('category')),
             'universities' => new UniversityResource($this->whenLoaded('universities')),
