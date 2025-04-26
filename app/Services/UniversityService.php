@@ -16,9 +16,10 @@ class UniversityService extends CommonService
     {
         if ($image) {
             $filename = time() . '_' . $image->getClientOriginalName();
+            $path = 'logos/' . $filename;
             $image->storeAs('logos', $filename, 'r2');
 
-            return $filename;
+            return $path;
         } else {
             return null;
         }
@@ -28,9 +29,10 @@ class UniversityService extends CommonService
     {
         if ($image) {
             $filename = time() . '_' . $image->getClientOriginalName();
+            $path = 'covers/' . $filename;
             $image->storeAs('covers', $filename, 'r2');
 
-            return $filename;
+            return $path;
         } else {
             return null;
         }
@@ -38,22 +40,23 @@ class UniversityService extends CommonService
 
     public function handleMultipleUpload(array $image)
     {
-        $path = [];
+        $paths = [];
 
         if(isset($image) && is_array($image)) {
             foreach ($image as $item) {
                 $filename = time() . '_' . $item->getClientOriginalName();
+                $path = 'images/' . $filename;
                 $item->storeAs('images', $filename, 'r2');
-                $path[] = $filename;
+                $paths[] = $path;
             }
         }
-        return $path;
+        return $paths;
     }
 
     public function deleteLogo($image)
     {
-        if ($image && Storage::disk('r2')->exists('logos/' . $image)) {
-            Storage::disk('r2')->delete('logos/' . $image);
+        if ($image && Storage::disk('r2')->exists($image)) {
+            Storage::disk('r2')->delete($image);
         }
         else {
             return null;
@@ -62,8 +65,8 @@ class UniversityService extends CommonService
 
     public function deleteSingleImage($image)
     {
-        if ($image && Storage::disk('r2')->exists('covers/' . $image)) {
-            Storage::disk('r2')->delete('covers/' . $image);
+        if ($image && Storage::disk('r2')->exists($image)) {
+            Storage::disk('r2')->delete($image);
         }
         else {
             return null;
@@ -74,8 +77,8 @@ class UniversityService extends CommonService
     {
         $deletingImgs = array_diff($image, $existingImages);
         foreach ($deletingImgs as $img) {
-            if ($img && Storage::disk('r2')->exists('images/' . $img)) {
-                Storage::disk('r2')->delete('images/' . $img);
+            if ($img && Storage::disk('r2')->exists($img)) {
+                Storage::disk('r2')->delete($img);
             }
         }
     }
