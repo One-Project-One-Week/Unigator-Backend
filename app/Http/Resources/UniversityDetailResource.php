@@ -16,6 +16,7 @@ class UniversityDetailResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'user' => UserResource::make($this->user),
             'logo' => $this->logo,
             'description' => $this->description,
