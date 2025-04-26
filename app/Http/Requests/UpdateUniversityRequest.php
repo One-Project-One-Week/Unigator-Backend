@@ -36,7 +36,8 @@ class UpdateUniversityRequest extends FormRequest
             'no_of_students' => 'nullable|integer',
             'website_link' => 'nullable|url',
             'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'ranking' => 'nullable'
+            'ranking' => 'nullable',
+            'application_link'=> 'nullable|url',
         ];
     }
 

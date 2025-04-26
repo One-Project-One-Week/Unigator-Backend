@@ -33,7 +33,7 @@ class ProgramController extends Controller
             $programList = ProgramResource::collection($this->programmservice->getAll()->load('category'));
             return $this->success('program-success', $programList, 'Programs retrieved successfully', 200);
         } catch (\Exception $e) {
-            return $this->fail('program-fail', null, $e->getMessage(), 500);
+            return $this->fail('program-fail', null, $e->getMessage(), 404);
         }
     }
 
@@ -180,10 +180,10 @@ class ProgramController extends Controller
     {
         //
         try {
-            $program = ProgramDetailResource::make($this->programmservice->getDataById($id)->load('category'));
+            $program = ProgramDetailResource::make($this->programmservice->getDataById($id)->load(['universities', 'category']));
             return $this->success('program-success', $program, 'Program retrieved successfully', 200);
         } catch (\Exception $e) {
-            return $this->fail('program-fail', null, $e->getMessage(), 500);
+            return $this->fail('program-fail', null, $e->getMessage(), 404);
         }
     }
 
@@ -194,10 +194,10 @@ class ProgramController extends Controller
     {
         //
         try {
-            $program = ProgramDetailResource::make($this->programmservice->getDataById($id));
+            $program = ProgramDetailResource::make($this->programmservice->getDataById($id)->load(['universities', 'category']));
             return $this->success('program-success', $program, 'Program retrieved successfully', 200);
         } catch (\Exception $e) {
-            return $this->fail('program-fail', null, $e->getMessage(), 500);
+            return $this->fail('program-fail', null, $e->getMessage(), 404);
         }
     }
 
@@ -237,7 +237,7 @@ class ProgramController extends Controller
             $this->programmservice->deleteData($id);
             return $this->success('program-success', null, 'Program deleted successfully', 200);
         } catch (\Exception $e) {
-            return $this->fail('program-fail', null, $e->getMessage(), 500);
+            return $this->fail('program-fail', null, $e->getMessage(), 404);
         }
     }
 }
