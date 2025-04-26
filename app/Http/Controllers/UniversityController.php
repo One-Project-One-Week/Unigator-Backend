@@ -109,6 +109,13 @@ class UniversityController extends Controller
             ->take(2)
             ->get();
 
+        $levels = $university->programs
+            ->pluck('level')
+            ->unique()
+            ->values();
+
+        $university->levels = $levels;
+
         $university->similar_universities = $similarUniversities;
 
         return $this->success('success', UniversityDetailResource::make($university), "University Details", 200);
