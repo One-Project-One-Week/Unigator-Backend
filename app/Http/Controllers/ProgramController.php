@@ -109,7 +109,7 @@ class ProgramController extends Controller
                 // Loop through each detail to get the tuition fees
                 foreach ($details as $detail) {
                     // Assuming 'tuitionFees' is a key inside each detail
-                    $tuitionFees[] = $detail['fees'];
+                    $tuitionFees[] = $detail['tuition_fees'];
                 }
 
                 // Calculate the average for this program
@@ -147,7 +147,7 @@ class ProgramController extends Controller
         // $validatedData['detail'] = json_encode($validatedData['detail']);
         // $validatedData['application_requirement'] = json_encode($validatedData['application_requirement']);
         try {
-            $totalFees = array_sum(array_column($validatedData['detail'], 'fees'));
+            $totalFees = array_sum(array_column($validatedData['detail'], 'tuition_fees'));
             $yearsCount = count($validatedData['detail']);
             $average = $yearsCount > 0 ? $totalFees / $yearsCount : 0;
             $validatedData['average_cost'] = round($average, 2);
@@ -191,16 +191,24 @@ class ProgramController extends Controller
      */
     public function update(UpdateProgramRequest $request, string $id)
     {
-        //
         $validatedData = $request->validated();
-        // $validatedData['detail'] = json_encode($validatedData['detail']);
-        // $validatedData['application_requirement'] = json_encode($validatedData['application_requirement']);
+
         try {
+            // Calculate average cost if detail is provided in the update
+            if (isset($validatedData['detail'])) {
+                $totalFees = array_sum(array_column($validatedData['detail'], 'tuition_fees'));
+                $yearsCount = count($validatedData['detail']);
+                $average = $yearsCount > 0 ? $totalFees / $yearsCount : 0;
+                $validatedData['average_cost'] = round($average, 2);
+            }
+
             $program = $this->programmservice->updateData($id, $validatedData);
+
             $resProgram = ProgramResource::make($this->programmservice->getDataById($id)->load('category'));
-            return $this->success('program-success', $resProgram, 'Program updated successfully', 200);
+
+            return $this->success('program-update-success', $resProgram, 'Program updated successfully', 200);
         } catch (\Exception $e) {
-            return $this->fail('program-fail', null, $e->getMessage(), 500);
+            return $this->fail('program-update-fail', null, $e->getMessage(), 500);
         }
     }
 
