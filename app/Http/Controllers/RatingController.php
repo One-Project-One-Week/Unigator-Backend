@@ -44,7 +44,7 @@ class RatingController extends Controller
 
         try {
 
-            $userId = Auth::id();
+            $userId = Auth::user()->id;
             $validatedData = $request->validated();
 
             $user = User::findOrFail($userId);
