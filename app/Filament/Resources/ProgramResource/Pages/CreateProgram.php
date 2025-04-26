@@ -13,6 +13,9 @@ class CreateProgram extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['university_id'] = auth()->user()->university->id;
+
+        $data['average_cost'] = array_sum(array_column($data['detail'], 'tuition_fees')) / count($data['detail']);
+
         return $data;
     }
 }

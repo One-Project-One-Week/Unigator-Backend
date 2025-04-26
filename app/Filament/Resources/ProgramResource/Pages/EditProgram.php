@@ -17,4 +17,11 @@ class EditProgram extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['average_cost'] = array_sum(array_column($data['detail'], 'tuition_fees')) / count($data['detail']);
+
+        return $data;
+    }
 }

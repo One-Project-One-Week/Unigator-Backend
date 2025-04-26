@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ProgramResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ProgramResource\RelationManagers;
+use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Columns\TextColumn;
 
 class ProgramResource extends Resource
@@ -44,6 +45,10 @@ class ProgramResource extends Resource
                         TextInput::make('year')
                             ->required(),
                         TextInput::make('tuition_fees')
+                            ->required(),
+                        TagsInput::make('subject')
+                            ->label('Subject')
+                            ->placeholder('Enter subject')
                             ->required(),
                     ])
                     ->columns(2)
@@ -70,8 +75,8 @@ class ProgramResource extends Resource
                     ])
                     ->required()
                     ->native(false),
-                TextInput::make('average_cost')
-                    ->required(),
+                RichEditor::make('application_guideline')
+                    ->columnSpanFull(),
             ]);
     }
 
