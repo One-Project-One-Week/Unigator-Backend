@@ -25,7 +25,6 @@ class CreateRateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|integer|exists:users,id',
             'university_id' => 'required|integer|exists:universities,id',
             'rating_rate' => 'required|numeric',
         ];
