@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Program\PaymentType;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,10 +32,19 @@ class Program extends Model
         'application_requirement',
         'intake',
         'payment_plan',
-        'category_id',
         'level',
         'average_cost'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'detail' => 'array',
+            'application_requirement' => 'array',
+            'intake' => 'array',
+            'payment_plan' => PaymentType::class,
+        ];
+    }
 
     public function universities()
     {

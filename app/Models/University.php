@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -36,22 +37,22 @@ class University extends Model
     ];
 
 
-   public function user()
-   {
+    public function user()
+    {
         return $this->belongsTo(User::class);
-   }
+    }
 
-   public function programs()
-   {
+    public function programs()
+    {
         return $this->hasMany(Program::class, 'university_id');
-   }
+    }
 
-   public function accommodations()
-   {
-       return $this->hasMany(Accomodation::class, 'university_id');
-   }
-   public function ratings()
-   {
-       return $this->hasMany(Rating::class, 'university_id');
-   }
+    public function accommodations()
+    {
+        return $this->hasMany(Accomodation::class, 'university_id');
+    }
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class, 'university_id');
+    }
 }
