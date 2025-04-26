@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Notifications\Notifiable;
+use App\Models\Rating;
+use App\Enums\University\Type;
 use Laravel\Sanctum\HasApiTokens;
 
 
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Rating;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class University extends Model
 {
@@ -36,6 +37,7 @@ class University extends Model
 
     protected $casts = [
         'image' => 'array',
+        'type' => Type::class,
     ];
 
 

@@ -3,17 +3,21 @@
 namespace App\Filament\Pages;
 
 use Exception;
-use Filament\Facades\Filament;
-use Filament\Forms\Components\Section;
-use Filament\Pages\Page;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Forms\Components\TextInput;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
+use Filament\Pages\Page;
 use Filament\Actions\Action;
+use App\Enums\University\Type;
+use Filament\Facades\Filament;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Components\Textarea;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Forms\Components\FileUpload;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Filament\Forms\Concerns\InteractsWithForms;
 
 class EditProfile extends Page implements HasForms
 {
@@ -67,9 +71,37 @@ class EditProfile extends Page implements HasForms
                 Section::make('University Information')
                     ->aside()
                     ->schema([
-                        TextInput::make('description')
-                            ->label('University Name')
+                        FileUpload::make('logo')
+                            ->disk('r2')
+                            ->directory('logos')
+                            ->avatar()
                             ->required(),
+                        FileUpload::make('cover')
+                            ->disk('r2')
+                            ->directory('covers')
+                            ->required(),
+                        Textarea::make('description')
+                            ->label('Description'),
+                        Textarea::make('address')
+                            ->label('Address'),
+                        TextInput::make('founded')
+                            ->integer(),
+                        Select::make('type')
+                            ->options(Type::class)
+                            ->required()
+                            ->native(false),
+                        TextInput::make('no_of_students')
+                            ->integer(),
+                        TextInput::make('website_link')
+                            ->url(),
+                        TextInput::make('application_link')
+                            ->url(),
+                        FileUpload::make('image')
+                            ->label('Gallery')
+                            ->disk('r2')
+                            ->directory('images')
+                            ->multiple()
+                            ->image(),
                     ]),
             ])
             ->model($this->getUser()->university)
