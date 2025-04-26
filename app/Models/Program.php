@@ -14,6 +14,7 @@ class Program extends Model
     protected $casts = [
         'detail' => 'array',
         'application_requirement' => 'array',
+        "intake" => 'array',
     ];
 
     use HasFactory, Notifiable, HasApiTokens;

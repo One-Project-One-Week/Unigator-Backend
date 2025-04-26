@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->string('degree_type');
             $table->string('duration');
             $table->json('application_requirement');
-            $table->string('intake');
+            $table->json('intake');
             $table->string('level');
             $table->decimal('average_cost', 8, 2)->nullable();
             $table->enum('payment_plan', ['monthly', 'per_semester', 'no_installements']);
