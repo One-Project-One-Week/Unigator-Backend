@@ -26,6 +26,7 @@ class ProgramResource extends JsonResource
             'degree_type' => $this->degree_type,
             'duration' => $this->duration,
             // 'application_requirement' => json_decode($this->application_requirement),
+            'application_guideline' => $this->application_guideline,
             'intake' => $this->intake,
             'payment_plan' => $this->payment_plan,
             'average_cost' => $this->average_cost,

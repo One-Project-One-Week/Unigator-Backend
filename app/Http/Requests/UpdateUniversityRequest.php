@@ -28,6 +28,7 @@ class UpdateUniversityRequest extends FormRequest
             'country' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'description' => 'nullable',
+            'address' => 'nullable|string|max:255',
             'slug' => 'required|alpha|unique:universities,slug,' . $this->user()->university->id,
             'image' => 'nullable|array',
             'type' => 'nullable|string|max:255',

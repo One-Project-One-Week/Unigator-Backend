@@ -20,6 +20,7 @@ class University extends Model
         'description',
         'country',
         'city',
+        'address',
         'ranking',
         'logo',
         'cover',

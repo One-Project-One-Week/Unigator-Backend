@@ -20,6 +20,7 @@ class UniversityDetailResource extends JsonResource
             'description' => $this->description,
             'country' => $this->country,
             'city' => $this->city,
+            'address' => $this->address,
             'cover' => $this->cover,
             'slug' => $this->slug,
             'ranking' => $this->ranking,
