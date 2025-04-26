@@ -8,8 +8,8 @@ use App\Models\University;
 use App\Models\Rating;
 use App\Traits\HttpResponses;
 use Exception;
-
 use App\Models\User;
+
 use Illuminate\Support\Facades\Auth;
 
 class RatingController extends Controller
@@ -48,6 +48,8 @@ class RatingController extends Controller
             $validatedData = $request->validated();
 
             $user = User::findOrFail($userId);
+
+
             if (!$user || $user->role !== "0") {
                 return $this->fail('forbidden', null, "Only student accounts can give ratings", 403);
             } 

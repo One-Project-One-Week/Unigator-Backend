@@ -32,6 +32,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/university/dashboard', [UniversityController::class, 'dashboard'])->middleware('university');
     Route::get('/user', [UserController::class, 'getUserProfile']);
     Route::put('/user', [UserController::class, 'updateProfile']);
+    Route::post('/rating', [RatingController::class, 'createRating']);
+    Route::post('/accomodation', [AccomodationController::class, 'createAccomodation']);
+
+
 });
 
 Route::get('/programs', [ProgramController::class, 'index']);
@@ -50,7 +54,6 @@ Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 Route::get('/avgFees', [ProgramController::class, 'getAverageProgramCost']);
 Route::get('/findProgram', [ProgramController::class, 'getPrograms']);
 
-Route::post('/accomodation', [AccomodationController::class, 'createAccomodation']);
 Route::get('/accomodation', [AccomodationController::class, 'getAllAccomodations']);
 
 
@@ -60,7 +63,6 @@ Route::delete('/accomodation/{id}', [AccomodationController::class, 'deleteAccom
 
 
 Route::get('/rating', [RatingController::class, 'getRating']);
-Route::post('/rating', [RatingController::class, 'createRating']);
 
 
 Route::get('/scholarship', [ScholarshipController::class, 'getScholarshipInfoAll']);
