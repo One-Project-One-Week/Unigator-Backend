@@ -30,6 +30,7 @@ class University extends Model
         'website_link',
         'slug',
         'image',
+        'application_link'
     ];
 
     protected $casts = [

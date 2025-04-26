@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\ProgramResource;
 
 class UniversityDetailResource extends JsonResource
 {
@@ -35,6 +36,7 @@ class UniversityDetailResource extends JsonResource
             'similar_universities' => UniversityResource::collection($this->resource->similar_universities) ?? collect(),
             'levels' => $this->when(isset($this->levels), $this->levels),
 
+            "application_link" => $this->application_link,
         ];
     }
 }

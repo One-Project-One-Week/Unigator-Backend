@@ -27,6 +27,7 @@ class UniversityResource extends JsonResource
             'rating' => $this->ratings_avg_rating_rate,
             'count' => $this->programs->count(),
             'program_names' => $this->programs->pluck('name')->take(3),
+            'application_link' => $this->application_link,
         ];
     }
 }

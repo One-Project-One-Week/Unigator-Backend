@@ -35,6 +35,7 @@ class UniversityFactory extends Factory
             ],
             "website_link" => $this->faker->url(),
             "slug" => $this->faker->slug(),
+            "application_link" => $this->faker->url(),
         ];
     }
 }

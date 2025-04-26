@@ -47,4 +47,10 @@ class Program extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function scholarships()
+    {
+        return $this->hasMany(Scholarship::class, 'program_id');
+    }
+    
 }
