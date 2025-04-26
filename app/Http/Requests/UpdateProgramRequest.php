@@ -24,7 +24,6 @@ class UpdateProgramRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'uni_id' => 'sometimes|required|integer|exists:universities,id',
             'name' => 'sometimes|required|string|max:255',
             'detail' => 'sometimes|required|array',
             'degree_type' => 'sometimes|required|string',
@@ -33,6 +32,8 @@ class UpdateProgramRequest extends FormRequest
             'intake' => 'sometimes|required|string|max:255',
             'payment_plan' => 'sometimes|required|in:monthly,per_semester,no_installements',
             'category_id' => 'sometimes|required|integer|exists:categories,id',
+            'applcation_guideline' => 'nullable',
+            'level' => 'sometimes|required|string|max:255',
         ];
     }
 

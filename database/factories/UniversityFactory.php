@@ -22,6 +22,7 @@ class UniversityFactory extends Factory
             "description" => $this->faker->text(200),
             "country" => $this->faker->country(),
             "city" => $this->faker->city(),
+            "address" => $this->faker->address(),
             "ranking" => $this->faker->numberBetween(1, 100),
             "logo" => $this->faker->imageUrl(640, 480, 'business', true, 'Faker'),
             "cover" => $this->faker->imageUrl(640, 480, 'business', true, 'Faker'),

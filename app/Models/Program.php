@@ -34,7 +34,8 @@ class Program extends Model
         'payment_plan',
         'category_id',
         'level',
-        'average_cost'
+        'average_cost',
+        'application_guideline'
     ];
 
     public function universities()

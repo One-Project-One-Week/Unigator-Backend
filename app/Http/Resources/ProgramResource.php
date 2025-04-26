@@ -21,6 +21,7 @@ class ProgramResource extends JsonResource
             'payment_plan' => $this->payment_plan,
             'average_cost' => (float) $this->average_cost,
             'application_requirement' => $this->application_requirement,
+            'application_guideline' => $this->application_guideline,
             'level' => $this->level,
             'universities' => new UniversityResource($this->whenLoaded('universities')),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
