@@ -33,10 +33,14 @@ class ProgramFactory extends Factory
                 'IELTS',
                 'Transcript',
             ],
-            "intake" => $this->faker->date(),
+            "intake" => [
+                    $this->faker->month(),
+                    $this->faker->month()
+            ],
+
             "level" => $this->faker->randomElement(['Undergraduate', 'Postgraduate', 'Doctoral']),
             "payment_plan" => $this->faker->randomElement(['monthly', 'per_semester', 'no_installements']),
-
+            // "average_cost" => 
         ];
     }
 }
