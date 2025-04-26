@@ -28,7 +28,7 @@ class UniversityService extends CommonService
     {
         if ($image) {
             $filename = time() . '_' . $image->getClientOriginalName();
-            $image->storeAs('images', $filename, 'r2');
+            $image->storeAs('covers', $filename, 'r2');
 
             return $filename;
         } else {
@@ -42,7 +42,8 @@ class UniversityService extends CommonService
 
         if(isset($image) && is_array($image)) {
             foreach ($image as $item) {
-                $filename = $this->handleSingleUpload($item);
+                $filename = time() . '_' . $item->getClientOriginalName();
+                $item->storeAs('images', $filename, 'r2');
                 $path[] = $filename;
             }
         }
@@ -61,8 +62,8 @@ class UniversityService extends CommonService
 
     public function deleteSingleImage($image)
     {
-        if ($image && Storage::disk('r2')->exists('images/' . $image)) {
-            Storage::disk('r2')->delete('images/' . $image);
+        if ($image && Storage::disk('r2')->exists('covers/' . $image)) {
+            Storage::disk('r2')->delete('covers/' . $image);
         }
         else {
             return null;
@@ -73,7 +74,9 @@ class UniversityService extends CommonService
     {
         $deletingImgs = array_diff($image, $existingImages);
         foreach ($deletingImgs as $img) {
-            $this->deleteSingleImage($img);
+            if ($img && Storage::disk('r2')->exists('images/' . $img)) {
+                Storage::disk('r2')->delete('images/' . $img);
+            }
         }
     }
 }
