@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\ScholarshipController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -50,3 +51,7 @@ Route::delete('/accomodation/{id}', [AccomodationController::class, 'deleteAccom
 
 Route::get('/rating', [RatingController::class, 'getRating']);
 Route::post('/rating', [RatingController::class, 'createRating']);
+
+
+Route::get('/scholarship', [ScholarshipController::class, 'getScholarshipInfoAll']);
+Route::get('/scholarship/{id}', [ScholarshipController::class, 'getScholarshipInfo']);

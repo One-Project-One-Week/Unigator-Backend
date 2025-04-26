@@ -20,7 +20,6 @@ class ProgramService extends CommonService
     {
         return $this->connection()->query()->where('uuid', $id)->firstOrFail();
     }
-
     public function createData(array $data)
     {
         return $this->connection()->create($data);

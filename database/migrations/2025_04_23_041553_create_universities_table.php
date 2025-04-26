@@ -26,6 +26,7 @@ return new class extends Migration
             $table->json('image')->nullable();
             $table->string('website_link')->nullable();
             $table->string('slug')->unique();
+            $table->string('application_link');
             $table->timestamps();
         });
     }
