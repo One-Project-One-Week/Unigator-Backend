@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProgramRequest;
 use App\Http\Requests\UpdateProgramRequest;
+use App\Http\Resources\ProgramDetailResource;
 use App\Http\Resources\ProgramResource;
 use App\Models\Program;
 use App\Services\ProgramService;
@@ -49,23 +50,31 @@ class ProgramController extends Controller
         // Calculate max budget if budget parameter exists
         $maxBudget = $budget ? $budget * 1.15 : null;
 
-        // Build query with nested eager loading
-        $query = Program::with('universities')->when($search, function ($query, $search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%$search%")
-                    ->orWhereHas('category', fn($q) => $q->where('name', 'like', "%$search%"));
-            });
-        })
+        \Log::info('Budget filter:', [
+            'requested_budget' => $budget,
+            'calculated_max_budget' => $maxBudget
+        ]);
+
+        // Build query
+        $query = Program::with(['category', 'universities']) // Using 'universities' as per your relationship
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%")
+                        ->orWhereHas('category', fn($q) => $q->where('name', 'like', "%$search%"));
+                });
+            })
             ->when($country, function ($query, $country) {
                 $query->whereHas('universities', fn($q) => $q->where('country', $country));
             })
             ->when($city, function ($query, $city) {
                 $query->whereHas('universities', fn($q) => $q->where('city', $city));
             })
+            ->when($type, function ($query, $type) {
+                $query->whereHas('universities', fn($q) => $q->where('type', $type));
+            })
             ->when($maxBudget, function ($query) use ($maxBudget) {
                 $query->where('average_cost', '<=', $maxBudget);
             })
-            ->when($type, fn($query, $type) => $query->where('degree_type', $type))
             ->when($level, fn($query, $level) => $query->where('level', $level));
 
         // Apply ordering based on budget presence
@@ -74,6 +83,12 @@ class ProgramController extends Controller
         } else {
             $query->orderBy('name', 'asc');  // A-Z when no budget
         }
+
+        // Debug the final query
+        \Log::debug('Final query:', [
+            'sql' => $query->toSql(),
+            'bindings' => $query->getBindings()
+        ]);
 
         // Execute paginated query
         $programs = $query->paginate($perPage);
@@ -165,7 +180,7 @@ class ProgramController extends Controller
     {
         //
         try {
-            $program = ProgramResource::make($this->programmservice->getDataById($id)->load('category'));
+            $program = ProgramDetailResource::make($this->programmservice->getDataById($id)->load('category'));
             return $this->success('program-success', $program, 'Program retrieved successfully', 200);
         } catch (\Exception $e) {
             return $this->fail('program-fail', null, $e->getMessage(), 500);
@@ -179,7 +194,7 @@ class ProgramController extends Controller
     {
         //
         try {
-            $program = ProgramResource::make($this->programmservice->getDataById($id));
+            $program = ProgramDetailResource::make($this->programmservice->getDataById($id));
             return $this->success('program-success', $program, 'Program retrieved successfully', 200);
         } catch (\Exception $e) {
             return $this->fail('program-fail', null, $e->getMessage(), 500);
