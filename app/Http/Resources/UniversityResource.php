@@ -17,7 +17,7 @@ class UniversityResource extends JsonResource
         return [
             'name' => $this->user->name,
             'role' => $this->user->role,
-            'logo' => $this->logo ? 'logos/' . $this->logo : null,
+            'logo' => $this->logo,
             'country' => $this->country,
             'description' => $this->description,
             'city' => $this->city,
@@ -28,6 +28,8 @@ class UniversityResource extends JsonResource
             'count' => $this->programs->count(),
             'program_names' => $this->programs->pluck('name')->take(3),
             'application_link' => $this->application_link,
+
+
         ];
     }
 }

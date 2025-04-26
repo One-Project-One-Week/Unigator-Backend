@@ -17,12 +17,12 @@ class UniversityDetailResource extends JsonResource
     {
         return [
             'user' => UserResource::make($this->user),
-            'logo' => $this->logo ? 'logos/' . $this->logo : null,
+            'logo' => $this->logo,
             'description' => $this->description,
             'country' => $this->country,
             'city' => $this->city,
             'address' => $this->address,
-            'cover' => $this->cover ? 'covers/' . $this->cover : null,
+            'cover' => $this->cover,
             'slug' => $this->slug,
             'ranking' => $this->ranking,
             'rating' => $this->ratings_avg_rating_rate,
@@ -30,9 +30,7 @@ class UniversityDetailResource extends JsonResource
             'founded' => $this->founded,
             'no_of_students' => $this->no_of_students,
             'website_link' => $this->website_link,
-            'image' => $this->image ? collect($this->image)->map(function ($img) {
-                return 'images/' . $img;
-            })->toArray() : [],
+            'image' => $this->image,
             'programs' => ProgramResource::collection($this->whenLoaded('programs')),
             'accommodations' => AccomodationResource::collection($this->whenLoaded('accommodations')),
             'similar_universities' => UniversityResource::collection($this->resource->similar_universities) ?? collect(),
