@@ -10,6 +10,7 @@ use App\Traits\HttpResponses;
 use Exception;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class RatingController extends Controller
 {
@@ -42,9 +43,11 @@ class RatingController extends Controller
     {
 
         try {
+
+            $userId = Auth::id();
             $validatedData = $request->validated();
 
-            $user = User::findOrFail($validatedData['user_id']);
+            $user = User::findOrFail($userId);
             if (!$user || $user->role !== "0") {
                 return $this->fail('forbidden', null, "Only student accounts can give ratings", 403);
             } 
@@ -55,7 +58,7 @@ class RatingController extends Controller
                 // Check if the user has already rated the university
                 $data = Rating::updateOrCreate(
                     [
-                        'user_id' => $validatedData['user_id'],
+                        'user_id' => $userId,
                         'university_id' => $validatedData['university_id'],
                     ],
                     [
